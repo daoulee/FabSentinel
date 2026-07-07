@@ -1,0 +1,415 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GreenVision.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             xmlns:converters="using:GreenVision.Converters"
+             xmlns:mi="using:Material.Icons.Avalonia"
+             xmlns:vlc="using:LibVLCSharp.Avalonia"
+             x:Class="GreenVision.Views.FabMonitoringView"
+             x:DataType="vm:FabMonitoringViewModel"
+             Background="Transparent">
+
+  <UserControl.Resources>
+    <converters:StringToColorBrushConverter x:Key="StringToBrush" />
+    <converters:StringToMaterialIconKindConverter x:Key="StringToIcon" />
+  </UserControl.Resources>
+
+  <Grid RowDefinitions="Auto,Auto,*" Margin="12">
+
+    <!-- ═══ Row 0: Header + Risk Card ═══ -->
+    <Grid Grid.Row="0" ColumnDefinitions="*,280" Margin="0,0,0,8">
+      <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
+        <TextBlock Text="Fab Environment Monitoring" Classes="page-title" />
+        <TextBlock Text="Real-time environmental safety for semiconductor fabrication" Classes="muted" />
+      </StackPanel>
+
+      <Border Grid.Column="1" Background="#25FFFFFF" CornerRadius="12"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Padding="16,12">
+        <Grid ColumnDefinitions="Auto,*">
+          <Border Grid.Column="0" Width="52" Height="52" CornerRadius="26"
+                  Background="{Binding RiskColor, Converter={StaticResource StringToBrush}}"
+                  Margin="0,0,12,0">
+            <mi:MaterialIcon Kind="{Binding RiskIcon, Converter={StaticResource StringToIcon}}"
+                             Width="26" Height="26"
+                             Foreground="White"
+                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+          <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+            <TextBlock Text="RISK LEVEL" FontSize="10" Foreground="#6A8099" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding RiskLevel}" FontSize="18" FontWeight="Bold"
+                       Foreground="{Binding RiskColor, Converter={StaticResource StringToBrush}}" />
+            <TextBlock Text="{Binding RiskDescription}" FontSize="10" Foreground="#6A8099"
+                       TextWrapping="Wrap" />
+          </StackPanel>
+        </Grid>
+      </Border>
+    </Grid>
+
+    <!-- ═══ Row 1: Tab Buttons ═══ -->
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="0" Margin="0,0,0,8">
+      <Button Classes="tab" Classes.tabactive="{Binding IsMonitorTab}"
+              Command="{Binding SelectFabTabCommand}" CommandParameter="Monitor">
+        Monitor
+      </Button>
+      <Button Classes="tab" Classes.tabactive="{Binding IsFloorPlanTab}"
+              Command="{Binding SelectFabTabCommand}" CommandParameter="FloorPlan">
+        Floor Plan
+      </Button>
+    </StackPanel>
+
+    <!-- ═══ Row 2: Monitor Panel ═══ -->
+    <Grid Grid.Row="2" RowDefinitions="*,*" IsVisible="{Binding IsMonitorTab}">
+
+      <!-- Sensor array + Environment chart -->
+      <Grid Grid.Row="0" ColumnDefinitions="*,*" Margin="0,0,0,8">
+        <Border Grid.Column="0" Background="#25FFFFFF" CornerRadius="12"
+                BorderBrush="#30FFFFFF" BorderThickness="1" Margin="0,0,6,0" Padding="16">
+          <Grid RowDefinitions="Auto,*">
+            <TextBlock Grid.Row="0" Text="Sensor Array" FontSize="13"
+                       FontWeight="SemiBold" Foreground="#F0F6FF" Margin="0,0,0,12" />
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding AllSensors}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <UniformGrid Rows="2" Columns="3" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:SensorCardViewModel">
+                  <Border Margin="4" Padding="12" CornerRadius="10" Background="#25FFFFFF">
+                    <StackPanel Spacing="6">
+                      <StackPanel Orientation="Horizontal" Spacing="6">
+                        <mi:MaterialIcon Kind="{Binding Icon, Converter={StaticResource StringToIcon}}"
+                                         Width="15" Height="15"
+                                         Foreground="{Binding StatusColor, Converter={StaticResource StringToBrush}}" />
+                        <TextBlock Text="{Binding Name}" FontSize="11"
+                                   Foreground="#6A8099" VerticalAlignment="Center" />
+                      </StackPanel>
+                      <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding DisplayValue}" FontSize="20" FontWeight="Bold"
+                                   Foreground="{Binding StatusColor, Converter={StaticResource StringToBrush}}" />
+                        <TextBlock Text="{Binding Unit}" FontSize="10" Foreground="#6A8099"
+                                   VerticalAlignment="Bottom" Margin="0,0,0,3" />
+                      </StackPanel>
+                      <ProgressBar Value="{Binding NormalizedValue}"
+                                   Minimum="0" Maximum="1" Height="4" />
+                      <TextBlock Text="{Binding StatusText}" FontSize="10" FontWeight="SemiBold"
+                                 Foreground="{Binding StatusColor, Converter={StaticResource StringToBrush}}" />
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </Grid>
+        </Border>
+
+        <Border Grid.Column="1" Background="#25FFFFFF" CornerRadius="12"
+                BorderBrush="#30FFFFFF" BorderThickness="1" Margin="6,0,0,0">
+          <Grid RowDefinitions="Auto,*">
+            <StackPanel Grid.Row="0" Margin="16,12,16,4">
+              <TextBlock Text="Temperature &amp; Humidity History" FontSize="13"
+                         FontWeight="SemiBold" Foreground="#F0F6FF" />
+              <TextBlock Text="60-minute rolling window" FontSize="11" Foreground="#6A8099" />
+            </StackPanel>
+            <lvc:CartesianChart Grid.Row="1"
+                                Series="{Binding EnvironmentSeries}"
+                                XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
+                                LegendPosition="Top" Background="Transparent"
+                                AnimationsSpeed="0:0:0.4"
+                                Margin="8,0,8,8" />
+          </Grid>
+        </Border>
+      </Grid>
+
+      <!-- Gas chart + Calibration -->
+      <Grid Grid.Row="1" ColumnDefinitions="*,300" Margin="0,0,0,0">
+        <Border Grid.Column="0" Background="#25FFFFFF" CornerRadius="12"
+                BorderBrush="#30FFFFFF" BorderThickness="1" Margin="0,0,6,0">
+          <Grid RowDefinitions="Auto,*">
+            <StackPanel Grid.Row="0" Margin="16,12,16,4">
+              <TextBlock Text="Gas Concentration History" FontSize="13"
+                         FontWeight="SemiBold" Foreground="#F0F6FF" />
+              <TextBlock Text="PM2.5 · NH3 — 120-minute window" FontSize="11" Foreground="#6A8099" />
+            </StackPanel>
+            <lvc:CartesianChart Grid.Row="1"
+                                Series="{Binding GasSeries}"
+                                XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
+                                LegendPosition="Top" Background="Transparent"
+                                AnimationsSpeed="0:0:0.4"
+                                Margin="8,0,8,8" />
+          </Grid>
+        </Border>
+
+        <Border Grid.Column="1" Background="#25FFFFFF" CornerRadius="12"
+                BorderBrush="#30FFFFFF" BorderThickness="1" Margin="6,0,0,0" Padding="16">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Sensor Calibration" FontSize="13"
+                       FontWeight="SemiBold" Foreground="#F0F6FF" />
+            <TextBlock Text="Sensor" FontSize="11" Foreground="#6A8099" />
+            <ComboBox SelectedIndex="0" HorizontalAlignment="Stretch">
+              <ComboBoxItem>Temperature</ComboBoxItem>
+              <ComboBoxItem>Humidity</ComboBoxItem>
+              <ComboBoxItem>PM2.5</ComboBoxItem>
+              <ComboBoxItem>PM10</ComboBoxItem>
+              <ComboBoxItem>NH3</ComboBoxItem>
+              <ComboBoxItem>CO</ComboBoxItem>
+            </ComboBox>
+            <TextBlock Text="Offset Adjustment" FontSize="11" Foreground="#6A8099" />
+            <NumericUpDown Value="{Binding CalibrationOffset}"
+                           Minimum="-10" Maximum="10" Increment="0.1"
+                           FormatString="F2" />
+            <Button Content="Apply Calibration" Classes="primary"
+                    Command="{Binding ApplyCalibrationCommand}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" />
+            <Border Height="1" Background="#20FFFFFF" />
+            <TextBlock Text="Last calibrated: 2025-06-28 09:15" FontSize="10" Foreground="#6A8099" />
+            <TextBlock Text="Calibration source: NIST Reference" FontSize="10" Foreground="#6A8099" />
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Grid>
+
+    <!-- ═══ Row 2: Floor Plan (Video Overlay) Panel ═══ -->
+    <Border Grid.Row="2" CornerRadius="12" ClipToBounds="True"
+            BorderBrush="#30FFFFFF" BorderThickness="1"
+            IsVisible="{Binding IsFloorPlanTab}">
+      <Grid RowDefinitions="Auto,*">
+
+        <!-- Header bar -->
+        <Border Grid.Row="0" Background="#CC050A14" Padding="16,10" ZIndex="10">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+              <!-- LIVE badge -->
+              <Border CornerRadius="5" Padding="8,3" Background="#B0FF0000">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                  <Ellipse Width="6" Height="6" Fill="White" VerticalAlignment="Center" />
+                  <TextBlock Text="LIVE" FontSize="10" Foreground="White" FontWeight="Bold" />
+                </StackPanel>
+              </Border>
+              <StackPanel Spacing="1" VerticalAlignment="Center">
+                <TextBlock Text="Fab Live View · Zone A" FontSize="13"
+                           FontWeight="SemiBold" Foreground="#F0F6FF" />
+                <TextBlock Text="Real-time sensor overlay · Semiconductor clean room · ISO Class 5"
+                           FontSize="10" Foreground="#6A8099" />
+              </StackPanel>
+            </StackPanel>
+            <!-- Status chips -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+              <Border CornerRadius="5" Padding="7,3" Background="#1500E896" BorderBrush="#3000E896" BorderThickness="1">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Ellipse Width="6" Height="6" Fill="#00E896" VerticalAlignment="Center" />
+                  <TextBlock Text="NORMAL" FontSize="9" Foreground="#00E896" FontWeight="SemiBold" />
+                </StackPanel>
+              </Border>
+              <Border CornerRadius="5" Padding="7,3" Background="#15FFB300" BorderBrush="#30FFB300" BorderThickness="1">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Ellipse Width="6" Height="6" Fill="#FFB300" VerticalAlignment="Center" />
+                  <TextBlock Text="WARNING" FontSize="9" Foreground="#FFB300" FontWeight="SemiBold" />
+                </StackPanel>
+              </Border>
+              <Border CornerRadius="5" Padding="7,3" Background="#15FF4466" BorderBrush="#30FF4466" BorderThickness="1">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Ellipse Width="6" Height="6" Fill="#FF4466" VerticalAlignment="Center" />
+                  <TextBlock Text="DANGER" FontSize="9" Foreground="#FF4466" FontWeight="SemiBold" />
+                </StackPanel>
+              </Border>
+            </StackPanel>
+          </Grid>
+        </Border>
+
+        <!-- Video + sensor overlay stack -->
+        <Grid Grid.Row="1">
+
+          <!-- Layer 0: VLC video player -->
+          <vlc:VideoView x:Name="FabVideoView" />
+
+          <!-- Layer 1: Fallback placeholder (shown when no video file) -->
+          <Border x:Name="VideoPlaceholder" Background="#0A111E" IsVisible="True">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
+              <mi:MaterialIcon Kind="VideoOutline" Width="56" Height="56"
+                               Foreground="#1A3A5A" HorizontalAlignment="Center" />
+              <TextBlock Text="Fab Room Video Feed" FontSize="16" FontWeight="SemiBold"
+                         Foreground="#2A5070" HorizontalAlignment="Center" />
+              <TextBlock FontSize="12" Foreground="#1A3858" HorizontalAlignment="Center"
+                         TextAlignment="Center"
+                         Text="Place fabroom.mp4 in&#10;Assets/Videos/fabroom.mp4" />
+              <Border CornerRadius="8" Padding="14,6" Background="#0F2035"
+                      BorderBrush="#1A4060" BorderThickness="1"
+                      HorizontalAlignment="Center">
+                <TextBlock Text="yt-dlp -f &quot;bestvideo[ext=mp4]&quot; &lt;URL&gt; -o Assets/Videos/fabroom.mp4"
+                           FontSize="10" Foreground="#3A6080"
+                           FontFamily="Consolas,Courier New,monospace" />
+              </Border>
+            </StackPanel>
+          </Border>
+
+          <!-- Layer 2: Gradient vignette for text readability -->
+          <Border IsHitTestVisible="False">
+            <Border.Background>
+              <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#B0020610" Offset="0" />
+                <GradientStop Color="#30000000" Offset="0.2" />
+                <GradientStop Color="#30000000" Offset="0.75" />
+                <GradientStop Color="#D0020610" Offset="1" />
+              </LinearGradientBrush>
+            </Border.Background>
+          </Border>
+
+          <!-- Layer 3: Sensor HUD overlay -->
+          <Grid RowDefinitions="Auto,*,Auto" Margin="12,10,12,10" IsHitTestVisible="False">
+
+            <!-- Top sensor row: PM2.5  PM10  NH3 -->
+            <UniformGrid Grid.Row="0" Columns="3" Margin="0,0,0,0">
+
+              <!-- PM2.5 -->
+              <Border Margin="4" Padding="10,8" CornerRadius="10"
+                      Background="#C8050A14" BorderBrush="#4000F0C8" BorderThickness="1">
+                <Grid ColumnDefinitions="Auto,*">
+                  <Ellipse Grid.Column="0" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,8,0"
+                           Fill="{Binding AllSensors[0].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  <StackPanel Grid.Column="1" Spacing="1">
+                    <TextBlock Text="PM2.5" FontSize="9" Foreground="#6A8099" FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal" Spacing="3" VerticalAlignment="Center">
+                      <TextBlock Text="{Binding AllSensors[0].DisplayValue}" FontSize="18" FontWeight="Bold"
+                                 Foreground="{Binding AllSensors[0].StatusColor, Converter={StaticResource StringToBrush}}" />
+                      <TextBlock Text="μg/m³" FontSize="9" Foreground="#3A6080" VerticalAlignment="Bottom" Margin="0,0,0,2" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding AllSensors[0].StatusText}" FontSize="9"
+                               Foreground="{Binding AllSensors[0].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  </StackPanel>
+                </Grid>
+              </Border>
+
+              <!-- PM10 -->
+              <Border Margin="4" Padding="10,8" CornerRadius="10"
+                      Background="#C8050A14" BorderBrush="#4000F0C8" BorderThickness="1">
+                <Grid ColumnDefinitions="Auto,*">
+                  <Ellipse Grid.Column="0" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,8,0"
+                           Fill="{Binding AllSensors[1].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  <StackPanel Grid.Column="1" Spacing="1">
+                    <TextBlock Text="PM10" FontSize="9" Foreground="#6A8099" FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal" Spacing="3">
+                      <TextBlock Text="{Binding AllSensors[1].DisplayValue}" FontSize="18" FontWeight="Bold"
+                                 Foreground="{Binding AllSensors[1].StatusColor, Converter={StaticResource StringToBrush}}" />
+                      <TextBlock Text="μg/m³" FontSize="9" Foreground="#3A6080" VerticalAlignment="Bottom" Margin="0,0,0,2" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding AllSensors[1].StatusText}" FontSize="9"
+                               Foreground="{Binding AllSensors[1].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  </StackPanel>
+                </Grid>
+              </Border>
+
+              <!-- NH3 -->
+              <Border Margin="4" Padding="10,8" CornerRadius="10"
+                      Background="#C8050A14" BorderBrush="#4000F0C8" BorderThickness="1">
+                <Grid ColumnDefinitions="Auto,*">
+                  <Ellipse Grid.Column="0" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,8,0"
+                           Fill="{Binding AllSensors[2].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  <StackPanel Grid.Column="1" Spacing="1">
+                    <TextBlock Text="NH₃" FontSize="9" Foreground="#6A8099" FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal" Spacing="3">
+                      <TextBlock Text="{Binding AllSensors[2].DisplayValue}" FontSize="18" FontWeight="Bold"
+                                 Foreground="{Binding AllSensors[2].StatusColor, Converter={StaticResource StringToBrush}}" />
+                      <TextBlock Text="ppm" FontSize="9" Foreground="#3A6080" VerticalAlignment="Bottom" Margin="0,0,0,2" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding AllSensors[2].StatusText}" FontSize="9"
+                               Foreground="{Binding AllSensors[2].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  </StackPanel>
+                </Grid>
+              </Border>
+
+            </UniformGrid>
+
+            <!-- Middle: empty (shows video) -->
+            <Grid Grid.Row="1" />
+
+            <!-- Bottom sensor row: CO  Temp  Humid -->
+            <UniformGrid Grid.Row="2" Columns="3">
+
+              <!-- CO -->
+              <Border Margin="4" Padding="10,8" CornerRadius="10"
+                      Background="#C8050A14" BorderBrush="#4000F0C8" BorderThickness="1">
+                <Grid ColumnDefinitions="Auto,*">
+                  <Ellipse Grid.Column="0" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,8,0"
+                           Fill="{Binding AllSensors[3].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  <StackPanel Grid.Column="1" Spacing="1">
+                    <TextBlock Text="CO" FontSize="9" Foreground="#6A8099" FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal" Spacing="3">
+                      <TextBlock Text="{Binding AllSensors[3].DisplayValue}" FontSize="18" FontWeight="Bold"
+                                 Foreground="{Binding AllSensors[3].StatusColor, Converter={StaticResource StringToBrush}}" />
+                      <TextBlock Text="ppm" FontSize="9" Foreground="#3A6080" VerticalAlignment="Bottom" Margin="0,0,0,2" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding AllSensors[3].StatusText}" FontSize="9"
+                               Foreground="{Binding AllSensors[3].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  </StackPanel>
+                </Grid>
+              </Border>
+
+              <!-- Temperature -->
+              <Border Margin="4" Padding="10,8" CornerRadius="10"
+                      Background="#C8050A14" BorderBrush="#4000F0C8" BorderThickness="1">
+                <Grid ColumnDefinitions="Auto,*">
+                  <Ellipse Grid.Column="0" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,8,0"
+                           Fill="{Binding AllSensors[4].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  <StackPanel Grid.Column="1" Spacing="1">
+                    <TextBlock Text="TEMP" FontSize="9" Foreground="#6A8099" FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal" Spacing="3">
+                      <TextBlock Text="{Binding AllSensors[4].DisplayValue}" FontSize="18" FontWeight="Bold"
+                                 Foreground="{Binding AllSensors[4].StatusColor, Converter={StaticResource StringToBrush}}" />
+                      <TextBlock Text="°C" FontSize="9" Foreground="#3A6080" VerticalAlignment="Bottom" Margin="0,0,0,2" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding AllSensors[4].StatusText}" FontSize="9"
+                               Foreground="{Binding AllSensors[4].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  </StackPanel>
+                </Grid>
+              </Border>
+
+              <!-- Humidity -->
+              <Border Margin="4" Padding="10,8" CornerRadius="10"
+                      Background="#C8050A14" BorderBrush="#4000F0C8" BorderThickness="1">
+                <Grid ColumnDefinitions="Auto,*">
+                  <Ellipse Grid.Column="0" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,8,0"
+                           Fill="{Binding AllSensors[5].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  <StackPanel Grid.Column="1" Spacing="1">
+                    <TextBlock Text="HUMID" FontSize="9" Foreground="#6A8099" FontWeight="SemiBold" />
+                    <StackPanel Orientation="Horizontal" Spacing="3">
+                      <TextBlock Text="{Binding AllSensors[5].DisplayValue}" FontSize="18" FontWeight="Bold"
+                                 Foreground="{Binding AllSensors[5].StatusColor, Converter={StaticResource StringToBrush}}" />
+                      <TextBlock Text="%" FontSize="9" Foreground="#3A6080" VerticalAlignment="Bottom" Margin="0,0,0,2" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding AllSensors[5].StatusText}" FontSize="9"
+                               Foreground="{Binding AllSensors[5].StatusColor, Converter={StaticResource StringToBrush}}" />
+                  </StackPanel>
+                </Grid>
+              </Border>
+
+            </UniformGrid>
+          </Grid>
+
+        </Grid>
+      </Grid>
+    </Border>
+
+  </Grid>
+
+  <UserControl.Styles>
+    <Style Selector="Button.tab">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#6A8099" />
+      <Setter Property="BorderThickness" Value="0,0,0,2" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="Padding" Value="16,12" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button.tab.tabactive">
+      <Setter Property="Foreground" Value="#00F0C8" />
+      <Setter Property="BorderBrush" Value="#00F0C8" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Button.tab:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+  </UserControl.Styles>
+
+</UserControl>

@@ -1,0 +1,141 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GreenVision.ViewModels"
+             x:Class="GreenVision.Views.AboutView"
+             x:DataType="vm:AboutViewModel"
+             Background="Transparent">
+
+  <ScrollViewer>
+    <StackPanel Margin="12" Spacing="12" MaxWidth="900">
+
+      <!-- Hero -->
+      <Border Background="#25FFFFFF" CornerRadius="16"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Padding="32">
+        <StackPanel Spacing="12" HorizontalAlignment="Center">
+          <Border Width="80" Height="80" CornerRadius="20"
+                  Background="#00F0C8" HorizontalAlignment="Center">
+            <TextBlock Text="GV" FontSize="32" FontWeight="Bold"
+                       Foreground="#040C1A"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+          <TextBlock Text="{Binding AppName}" FontSize="28" FontWeight="Bold"
+                     Foreground="#F0F6FF" HorizontalAlignment="Center" />
+          <TextBlock Text="{Binding AppVersion}" FontSize="14" Foreground="#00F0C8"
+                     HorizontalAlignment="Center" />
+          <TextBlock Text="{Binding AppSubtitle}" FontSize="13" Foreground="#6A8099"
+                     HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+          <Border Height="1" Background="#20FFFFFF" Width="200" />
+          <StackPanel Orientation="Horizontal" Spacing="16" HorizontalAlignment="Center">
+            <StackPanel Spacing="2">
+              <TextBlock Text="Runtime" FontSize="10" Foreground="#6A8099" HorizontalAlignment="Center" />
+              <TextBlock Text="{Binding DotNetVersion}" FontSize="11"
+                         Foreground="#F0F6FF" HorizontalAlignment="Center" />
+            </StackPanel>
+            <Border Width="1" Background="#20FFFFFF" />
+            <StackPanel Spacing="2">
+              <TextBlock Text="Build Date" FontSize="10" Foreground="#6A8099" HorizontalAlignment="Center" />
+              <TextBlock Text="{Binding BuildDate}" FontSize="11"
+                         Foreground="#F0F6FF" HorizontalAlignment="Center" />
+            </StackPanel>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <Grid ColumnDefinitions="*,*">
+
+        <!-- Tech Stack -->
+        <Border Grid.Column="0" Background="#25FFFFFF" CornerRadius="12"
+                BorderBrush="#30FFFFFF" BorderThickness="1" Padding="20" Margin="0,0,6,0">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Technology Stack" FontSize="14" FontWeight="SemiBold"
+                       Foreground="#00F0C8" />
+            <Border Height="1" Background="#20FFFFFF" />
+            <ItemsControl ItemsSource="{Binding TechStack}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="*,Auto" Margin="0,4">
+                    <TextBlock Grid.Column="0" Text="{Binding Item1}" FontSize="12"
+                               Foreground="#F0F6FF" VerticalAlignment="Center" />
+                    <Border Grid.Column="1" Background="#25FFFFFF" CornerRadius="4" Padding="6,2">
+                      <TextBlock Text="{Binding Item2}" FontSize="10"
+                                 Foreground="#00F0C8" FontFamily="Consolas,monospace" />
+                    </Border>
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <!-- Team -->
+        <Border Grid.Column="1" Background="#25FFFFFF" CornerRadius="12"
+                BorderBrush="#30FFFFFF" BorderThickness="1" Padding="20" Margin="6,0,0,0">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Project Team" FontSize="14" FontWeight="SemiBold"
+                       Foreground="#00F0C8" />
+            <Border Height="1" Background="#20FFFFFF" />
+            <ItemsControl ItemsSource="{Binding TeamMembers}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="Auto,*" Margin="0,4">
+                    <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16"
+                            Background="#1A00D2B5" Margin="0,0,10,0">
+                      <TextBlock Text="●" FontSize="10" Foreground="#00F0C8"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                      <TextBlock Text="{Binding Item1}" FontSize="12"
+                                 Foreground="#F0F6FF" FontWeight="Medium" />
+                      <TextBlock Text="{Binding Item2}" FontSize="10" Foreground="#6A8099" />
+                    </StackPanel>
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <!-- Roadmap -->
+      <Border Background="#25FFFFFF" CornerRadius="12"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Padding="20">
+        <StackPanel Spacing="12">
+          <TextBlock Text="Development Roadmap" FontSize="14" FontWeight="SemiBold"
+                     Foreground="#00F0C8" />
+          <Border Height="1" Background="#20FFFFFF" />
+          <Grid ColumnDefinitions="*,*,*,*">
+            <StackPanel Grid.Column="0" Spacing="6">
+              <Border Width="8" Height="8" CornerRadius="4" Background="#00E896"
+                      HorizontalAlignment="Left" />
+              <TextBlock Text="Phase 1 — UI" FontSize="12" FontWeight="SemiBold" Foreground="#00E896" />
+              <TextBlock Text="Complete MVVM UI with simulated data" FontSize="11"
+                         Foreground="#6A8099" TextWrapping="Wrap" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Spacing="6" Margin="12,0">
+              <Border Width="8" Height="8" CornerRadius="4" Background="#FFB300"
+                      HorizontalAlignment="Left" />
+              <TextBlock Text="Phase 2 — HW" FontSize="12" FontWeight="SemiBold" Foreground="#F59E0B" />
+              <TextBlock Text="ESP32 · Raspberry Pi · Serial/MQTT" FontSize="11"
+                         Foreground="#6A8099" TextWrapping="Wrap" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="6" Margin="12,0">
+              <Border Width="8" Height="8" CornerRadius="4" Background="#7D8590"
+                      HorizontalAlignment="Left" />
+              <TextBlock Text="Phase 3 — AI" FontSize="12" FontWeight="SemiBold" Foreground="#6A8099" />
+              <TextBlock Text="YOLO v8 ONNX · OpenCV pipeline" FontSize="11"
+                         Foreground="#6A8099" TextWrapping="Wrap" />
+            </StackPanel>
+            <StackPanel Grid.Column="3" Spacing="6" Margin="12,0">
+              <Border Width="8" Height="8" CornerRadius="4" Background="#7D8590"
+                      HorizontalAlignment="Left" />
+              <TextBlock Text="Phase 4 — Data" FontSize="12" FontWeight="SemiBold" Foreground="#6A8099" />
+              <TextBlock Text="SQLite · REST API · Reports" FontSize="11"
+                         Foreground="#6A8099" TextWrapping="Wrap" />
+            </StackPanel>
+          </Grid>
+        </StackPanel>
+      </Border>
+
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

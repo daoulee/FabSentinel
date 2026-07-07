@@ -1,0 +1,224 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GreenVision.ViewModels"
+             xmlns:converters="using:GreenVision.Converters"
+             xmlns:models="using:GreenVision.Models"
+             x:Class="GreenVision.Views.VisionInspectionView"
+             x:DataType="vm:VisionInspectionViewModel"
+             Background="Transparent">
+
+  <UserControl.Resources>
+    <converters:StringToColorBrushConverter x:Key="StringToBrush" />
+  </UserControl.Resources>
+
+  <Grid ColumnDefinitions="*,340" Margin="12">
+
+    <!-- LEFT: Camera Preview + Controls -->
+    <Grid Grid.Column="0" RowDefinitions="Auto,*,Auto" Margin="0,0,8,0">
+
+      <!-- Header -->
+      <StackPanel Grid.Row="0" Spacing="2" Margin="0,0,0,10">
+        <TextBlock Text="Vision Inspection" Classes="page-title" />
+        <TextBlock Text="AI-powered defect detection · YOLOv8 ONNX (Simulated)" Classes="muted" />
+      </StackPanel>
+
+      <!-- Camera Preview -->
+      <Border Grid.Row="1" Background="#25FFFFFF" CornerRadius="12"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Margin="0,0,0,8">
+        <Grid>
+          <Border Background="#080C14" CornerRadius="10">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
+              <TextBlock Text="📷" FontSize="52" HorizontalAlignment="Center" />
+              <!-- Connected state -->
+              <StackPanel IsVisible="{Binding IsCameraConnected}" Spacing="8">
+                <TextBlock Text="Camera Feed Active" FontSize="14" Foreground="#00F0C8"
+                           HorizontalAlignment="Center" FontWeight="SemiBold" />
+                <TextBlock Text="USB Camera · 1920×1080 · 30fps" FontSize="11"
+                           Foreground="#6A8099" HorizontalAlignment="Center" />
+                <!-- Simulated scan lines -->
+                <Border Width="200" Height="160" Background="#0A0D1117" CornerRadius="8"
+                        BorderBrush="#30FFFFFF" BorderThickness="1">
+                  <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="4">
+                    <TextBlock Text="■ ■ ■" FontSize="28" Foreground="#25FFFFFF"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="WAFER INSPECTION ZONE" FontSize="9"
+                               Foreground="#334155" HorizontalAlignment="Center" />
+                    <TextBlock Text="■ ■ ■" FontSize="28" Foreground="#25FFFFFF"
+                               HorizontalAlignment="Center" />
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+              <!-- Disconnected state -->
+              <StackPanel IsVisible="{Binding !IsCameraConnected}" Spacing="8">
+                <TextBlock Text="No Camera Signal" FontSize="14" Foreground="#6A8099"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="Connect USB camera to begin inspection" FontSize="11"
+                           Foreground="#5A7090" HorizontalAlignment="Center" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+          <!-- Inspecting overlay -->
+          <Border IsVisible="{Binding IsInspecting}" Background="#80000000" CornerRadius="10">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="12">
+              <TextBlock Text="⟳" FontSize="36" Foreground="#00F0C8"
+                         HorizontalAlignment="Center" />
+              <TextBlock Text="ANALYZING..." FontSize="14" FontWeight="Bold"
+                         Foreground="#00F0C8" HorizontalAlignment="Center" />
+              <TextBlock Text="Running YOLO inference..." FontSize="11"
+                         Foreground="#6A8099" HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+        </Grid>
+      </Border>
+
+      <!-- Controls -->
+      <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
+        <Button Content="⬡  Connect Camera" Classes="primary"
+                Command="{Binding ConnectCameraCommand}"
+                Padding="16,10" />
+        <Button Classes="primary"
+                Command="{Binding RunInspectionCommand}"
+                IsEnabled="{Binding IsCameraConnected}"
+                Padding="16,10">
+          <TextBlock Text="▶  Run Inspection"
+                     IsVisible="{Binding !IsInspecting}" />
+        </Button>
+        <Border Background="#25FFFFFF" CornerRadius="8" Padding="12,10">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <Ellipse Width="8" Height="8" VerticalAlignment="Center"
+                     Fill="{Binding CameraStatusColor, Converter={StaticResource StringToBrush}}" />
+            <TextBlock Text="{Binding CameraStatusText}" FontSize="12"
+                       Foreground="#F0F6FF" VerticalAlignment="Center" />
+          </StackPanel>
+        </Border>
+        <Border Background="#25FFFFFF" CornerRadius="8" Padding="12,10">
+          <TextBlock Text="{Binding PassRate, StringFormat='Pass Rate: {0}'}"
+                     FontSize="12" Foreground="#00F0C8" />
+        </Border>
+      </StackPanel>
+    </Grid>
+
+    <!-- RIGHT: Results Panel -->
+    <Grid Grid.Column="1" RowDefinitions="Auto,Auto,*">
+
+      <!-- Current Result -->
+      <Border Grid.Row="0" Background="#25FFFFFF" CornerRadius="12"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Margin="0,0,0,8" Padding="16">
+        <StackPanel Spacing="10">
+          <TextBlock Text="Inspection Result" FontSize="13"
+                     FontWeight="SemiBold" Foreground="#F0F6FF" />
+          <Border Height="1" Background="#20FFFFFF" />
+
+          <Grid ColumnDefinitions="Auto,*">
+            <Border Grid.Column="0" Width="70" Height="70" CornerRadius="35" Margin="0,0,12,0"
+                    Background="{Binding VerdictColor, Converter={StaticResource StringToBrush}}">
+              <TextBlock Text="{Binding VerdictText}" FontSize="12" FontWeight="Bold"
+                         Foreground="White" HorizontalAlignment="Center"
+                         VerticalAlignment="Center" TextAlignment="Center" />
+            </Border>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="6">
+              <StackPanel Spacing="1">
+                <TextBlock Text="CONFIDENCE" FontSize="10" Foreground="#6A8099" />
+                <TextBlock Text="{Binding ConfidenceText}" FontSize="20"
+                           FontWeight="Bold" Foreground="#F0F6FF" />
+              </StackPanel>
+              <StackPanel Spacing="1">
+                <TextBlock Text="INFERENCE TIME" FontSize="10" Foreground="#6A8099" />
+                <TextBlock Text="{Binding ElapsedTimeText}" FontSize="14"
+                           Foreground="#00F0C8" FontFamily="Consolas,monospace" />
+              </StackPanel>
+            </StackPanel>
+          </Grid>
+
+          <Border Height="1" Background="#20FFFFFF" />
+          <Grid ColumnDefinitions="*,*,*">
+            <StackPanel Grid.Column="0" Spacing="2" HorizontalAlignment="Center">
+              <TextBlock Text="{Binding InspectionCount}" FontSize="18" FontWeight="Bold"
+                         Foreground="#F0F6FF" HorizontalAlignment="Center" />
+              <TextBlock Text="Total" FontSize="10" Foreground="#6A8099" HorizontalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Spacing="2" HorizontalAlignment="Center">
+              <TextBlock Text="{Binding PassCount}" FontSize="18" FontWeight="Bold"
+                         Foreground="#00E896" HorizontalAlignment="Center" />
+              <TextBlock Text="PASS" FontSize="10" Foreground="#6A8099" HorizontalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="2" HorizontalAlignment="Center">
+              <TextBlock Text="{Binding FailCount}" FontSize="18" FontWeight="Bold"
+                         Foreground="#FF4466" HorizontalAlignment="Center" />
+              <TextBlock Text="FAIL" FontSize="10" Foreground="#6A8099" HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
+          <TextBlock Text="{Binding DefectCount, StringFormat='Defects detected: {0}'}"
+                     FontSize="11" Foreground="#6A8099" />
+        </StackPanel>
+      </Border>
+
+      <!-- Detected Defects -->
+      <Border Grid.Row="1" Background="#25FFFFFF" CornerRadius="12"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Margin="0,0,0,8" Padding="16">
+        <StackPanel Spacing="8">
+          <TextBlock Text="Detected Defects" FontSize="13"
+                     FontWeight="SemiBold" Foreground="#F0F6FF" />
+          <TextBlock Text="No defects detected" FontSize="12" Foreground="#6A8099"
+                     IsVisible="{Binding !CurrentDefects.Count}" />
+          <ItemsControl ItemsSource="{Binding CurrentDefects}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="models:DetectedDefect">
+                <Border Margin="0,2" Padding="8,6" CornerRadius="6" Background="#25FFFFFF">
+                  <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Ellipse Grid.Column="0" Width="8" Height="8" Fill="#FF4466"
+                             VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBlock Grid.Column="1" Text="{Binding Label}" FontSize="12"
+                               Foreground="#F0F6FF" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2" FontSize="11" Foreground="#FFB300"
+                               FontWeight="SemiBold" VerticalAlignment="Center"
+                               Text="{Binding Confidence, StringFormat='{}{0:P0}'}" />
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+
+      <!-- Inspection History -->
+      <Border Grid.Row="2" Background="#25FFFFFF" CornerRadius="12"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Padding="16">
+        <Grid RowDefinitions="Auto,*">
+          <TextBlock Grid.Row="0" Text="Inspection History" FontSize="13"
+                     FontWeight="SemiBold" Foreground="#F0F6FF" Margin="0,0,0,8" />
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding History}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:InspectionResult">
+                  <Border Margin="0,2" Padding="10,6" CornerRadius="6" Background="#25FFFFFF">
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                      <Border Grid.Column="0" Padding="5,2" CornerRadius="4" Margin="0,0,8,0">
+                        <Border.Background>
+                          <SolidColorBrush Color="#15FF4466" />
+                        </Border.Background>
+                        <TextBlock Text="{Binding VerdictText}" FontSize="10"
+                                   FontWeight="Bold" Foreground="#FF4466" />
+                      </Border>
+                      <TextBlock Grid.Column="1" FontSize="11" Foreground="#6A8099"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding InspectionNumber, StringFormat='#{0}'}" />
+                      <TextBlock Grid.Column="2" FontSize="11" Foreground="#F0F6FF"
+                                 VerticalAlignment="Center" Margin="8,0"
+                                 Text="{Binding Confidence, StringFormat='{}{0:P0}'}" />
+                      <TextBlock Grid.Column="3" FontSize="10" Foreground="#6A8099"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Timestamp, StringFormat='HH:mm:ss'}" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </Grid>
+      </Border>
+
+    </Grid>
+  </Grid>
+</UserControl>

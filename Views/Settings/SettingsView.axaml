@@ -1,0 +1,180 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GreenVision.ViewModels"
+             x:Class="GreenVision.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel"
+             Background="Transparent">
+
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Margin="12" MaxWidth="800">
+
+      <!-- Header -->
+      <StackPanel Grid.Row="0" Spacing="2" Margin="0,0,0,16">
+        <TextBlock Text="Settings" Classes="page-title" />
+        <TextBlock Text="System configuration and threshold management" Classes="muted" />
+      </StackPanel>
+
+      <!-- Language -->
+      <Border Grid.Row="1" Background="#25FFFFFF" CornerRadius="12"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Padding="20" Margin="0,0,0,12">
+        <StackPanel Spacing="14">
+          <TextBlock Text="Language / 언어" FontSize="14" FontWeight="SemiBold" Foreground="#00F0C8" />
+          <Border Height="1" Background="#20FFFFFF" />
+          <StackPanel Spacing="6" MaxWidth="240">
+            <TextBlock Text="Display Language" FontSize="12" Foreground="#6A8099" />
+            <ComboBox ItemsSource="{Binding Languages}"
+                      SelectedItem="{Binding SelectedLanguage}"
+                      HorizontalAlignment="Stretch" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- Connection Settings -->
+      <Border Grid.Row="2" Background="#25FFFFFF" CornerRadius="12"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Padding="20" Margin="0,0,0,12">
+        <StackPanel Spacing="14">
+          <TextBlock Text="Connection" FontSize="14" FontWeight="SemiBold" Foreground="#00F0C8" />
+          <Border Height="1" Background="#20FFFFFF" />
+          <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" >
+            <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6" Margin="0,0,8,10">
+              <TextBlock Text="API Base URL" FontSize="12" Foreground="#6A8099" />
+              <TextBox Text="{Binding ApiBaseUrl}" />
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1" Spacing="6" Margin="8,0,0,10">
+              <TextBlock Text="Serial Port (COM)" FontSize="12" Foreground="#6A8099" />
+              <ComboBox ItemsSource="{Binding AvailableComPorts}"
+                        SelectedItem="{Binding ComPort}"
+                        HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="0" Spacing="6" Margin="0,0,8,0">
+              <TextBlock Text="Camera Index" FontSize="12" Foreground="#6A8099" />
+              <ComboBox ItemsSource="{Binding CameraIndices}"
+                        SelectedItem="{Binding CameraIndex}"
+                        HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="6" Margin="8,0,0,0">
+              <TextBlock Text="Sensor Update Interval (ms)" FontSize="12" Foreground="#6A8099" />
+              <ComboBox ItemsSource="{Binding UpdateIntervals}"
+                        SelectedItem="{Binding SensorUpdateIntervalMs}"
+                        HorizontalAlignment="Stretch" />
+            </StackPanel>
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <!-- Notifications -->
+      <Border Grid.Row="3" Background="#25FFFFFF" CornerRadius="12"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Padding="20" Margin="0,0,0,12">
+        <StackPanel Spacing="14">
+          <TextBlock Text="Notifications" FontSize="14" FontWeight="SemiBold" Foreground="#00F0C8" />
+          <Border Height="1" Background="#20FFFFFF" />
+          <StackPanel Spacing="10">
+            <CheckBox IsChecked="{Binding EnableAlarmSound}"
+                      Content="Enable alarm sound on DANGER level" />
+            <CheckBox IsChecked="{Binding EnableNotifications}"
+                      Content="Enable desktop notifications" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- Thresholds -->
+      <Border Grid.Row="4" Background="#25FFFFFF" CornerRadius="12"
+              BorderBrush="#30FFFFFF" BorderThickness="1" Padding="20" Margin="0,0,0,12">
+        <StackPanel Spacing="14">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Grid.Column="0" Text="Alarm Thresholds" FontSize="14"
+                       FontWeight="SemiBold" Foreground="#00F0C8" VerticalAlignment="Center" />
+            <Button Grid.Column="1" Content="Reset Defaults" Classes="icon-btn"
+                    Command="{Binding ResetToDefaultsCommand}"
+                    Foreground="#6A8099" FontSize="12" />
+          </Grid>
+          <Border Height="1" Background="#20FFFFFF" />
+
+          <Grid ColumnDefinitions="120,*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+            <!-- Headers -->
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="SENSOR" FontSize="10"
+                       Foreground="#6A8099" FontWeight="SemiBold" Margin="0,0,0,8" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="UNIT" FontSize="10"
+                       Foreground="#6A8099" FontWeight="SemiBold" HorizontalAlignment="Center" />
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="WARNING ↑" FontSize="10"
+                       Foreground="#FFB300" FontWeight="SemiBold" HorizontalAlignment="Center" />
+            <TextBlock Grid.Row="0" Grid.Column="3" Text="DANGER ↑" FontSize="10"
+                       Foreground="#FF4466" FontWeight="SemiBold" HorizontalAlignment="Center" />
+
+            <!-- PM2.5 -->
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="PM2.5" FontSize="12"
+                       Foreground="#F0F6FF" VerticalAlignment="Center" Margin="0,4" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="μg/m³" FontSize="12"
+                       Foreground="#6A8099" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding Pm25Warning}"
+                           Margin="4,4" FormatString="F0" />
+            <NumericUpDown Grid.Row="1" Grid.Column="3" Value="{Binding Pm25Danger}"
+                           Margin="4,4" FormatString="F0" />
+
+            <!-- PM10 -->
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="PM10" FontSize="12"
+                       Foreground="#F0F6FF" VerticalAlignment="Center" Margin="0,4" />
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="μg/m³" FontSize="12"
+                       Foreground="#6A8099" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Pm10Warning}"
+                           Margin="4,4" FormatString="F0" />
+            <NumericUpDown Grid.Row="2" Grid.Column="3" Value="{Binding Pm10Danger}"
+                           Margin="4,4" FormatString="F0" />
+
+            <!-- NH3 -->
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="NH3" FontSize="12"
+                       Foreground="#F0F6FF" VerticalAlignment="Center" Margin="0,4" />
+            <TextBlock Grid.Row="3" Grid.Column="1" Text="ppm" FontSize="12"
+                       Foreground="#6A8099" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <NumericUpDown Grid.Row="3" Grid.Column="2" Value="{Binding Nh3Warning}"
+                           Margin="4,4" FormatString="F1" />
+            <NumericUpDown Grid.Row="3" Grid.Column="3" Value="{Binding Nh3Danger}"
+                           Margin="4,4" FormatString="F1" />
+
+            <!-- CO -->
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="CO" FontSize="12"
+                       Foreground="#F0F6FF" VerticalAlignment="Center" Margin="0,4" />
+            <TextBlock Grid.Row="4" Grid.Column="1" Text="ppm" FontSize="12"
+                       Foreground="#6A8099" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding CoWarning}"
+                           Margin="4,4" FormatString="F1" />
+            <NumericUpDown Grid.Row="4" Grid.Column="3" Value="{Binding CoDanger}"
+                           Margin="4,4" FormatString="F1" />
+
+            <!-- Temperature -->
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Temperature" FontSize="12"
+                       Foreground="#F0F6FF" VerticalAlignment="Center" Margin="0,4" />
+            <TextBlock Grid.Row="5" Grid.Column="1" Text="°C" FontSize="12"
+                       Foreground="#6A8099" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <NumericUpDown Grid.Row="5" Grid.Column="2" Value="{Binding TempWarning}"
+                           Margin="4,4" FormatString="F1" />
+            <NumericUpDown Grid.Row="5" Grid.Column="3" Value="{Binding TempDanger}"
+                           Margin="4,4" FormatString="F1" />
+
+            <!-- Humidity -->
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Humidity" FontSize="12"
+                       Foreground="#F0F6FF" VerticalAlignment="Center" Margin="0,4" />
+            <TextBlock Grid.Row="6" Grid.Column="1" Text="%" FontSize="12"
+                       Foreground="#6A8099" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding HumidityWarning}"
+                           Margin="4,4" FormatString="F0" />
+            <NumericUpDown Grid.Row="6" Grid.Column="3" Value="{Binding HumidityDanger}"
+                           Margin="4,4" FormatString="F0" />
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <!-- Save button + status -->
+      <StackPanel Grid.Row="5" Orientation="Horizontal" Spacing="12" Margin="0,0,0,12">
+        <Button Content="Save Settings" Classes="primary"
+                Command="{Binding SaveSettingsCommand}"
+                Padding="24,12" FontSize="14" />
+        <TextBlock Text="{Binding SaveStatusMessage}"
+                   Foreground="#00E896" FontSize="13"
+                   VerticalAlignment="Center"
+                   IsVisible="{Binding SaveSuccess}" />
+      </StackPanel>
+
+    </Grid>
+  </ScrollViewer>
+</UserControl>

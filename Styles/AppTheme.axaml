@@ -1,0 +1,399 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- ─── COLOR RESOURCES ─── -->
+  <Styles.Resources>
+    <ResourceDictionary>
+      <!-- Accent colors -->
+      <Color x:Key="ColorPrimary">#00F0C8</Color>
+      <Color x:Key="ColorSecondary">#7C3AED</Color>
+      <Color x:Key="ColorPrimaryDim">#1A00F0C8</Color>
+      <Color x:Key="ColorNavSelected">#2500F0C8</Color>
+
+      <!-- Background layers -->
+      <Color x:Key="ColorBackground">#040C1A</Color>
+      <Color x:Key="ColorSidebar">#06101E</Color>
+      <Color x:Key="ColorCard">#25FFFFFF</Color>
+      <Color x:Key="ColorCardHover">#35FFFFFF</Color>
+      <Color x:Key="ColorCardDark">#15FFFFFF</Color>
+
+      <!-- Borders -->
+      <Color x:Key="ColorBorder">#30FFFFFF</Color>
+      <Color x:Key="ColorBorderGlow">#5500F0C8</Color>
+
+      <!-- Text -->
+      <Color x:Key="ColorTextPrimary">#F0F6FF</Color>
+      <Color x:Key="ColorTextSecondary">#7A8FA6</Color>
+
+      <!-- Status -->
+      <Color x:Key="ColorSafe">#00E896</Color>
+      <Color x:Key="ColorWarning">#FFB300</Color>
+      <Color x:Key="ColorDanger">#FF4466</Color>
+
+      <!-- Brushes -->
+      <SolidColorBrush x:Key="BrushPrimary"         Color="{StaticResource ColorPrimary}" />
+      <SolidColorBrush x:Key="BrushSecondary"        Color="{StaticResource ColorSecondary}" />
+      <SolidColorBrush x:Key="BrushBackground"       Color="{StaticResource ColorBackground}" />
+      <SolidColorBrush x:Key="BrushCard"             Color="{StaticResource ColorCard}" />
+      <SolidColorBrush x:Key="BrushSidebar"          Color="{StaticResource ColorSidebar}" />
+      <SolidColorBrush x:Key="BrushBorder"           Color="{StaticResource ColorBorder}" />
+      <SolidColorBrush x:Key="BrushTextPrimary"      Color="{StaticResource ColorTextPrimary}" />
+      <SolidColorBrush x:Key="BrushTextSecondary"    Color="{StaticResource ColorTextSecondary}" />
+      <SolidColorBrush x:Key="BrushSafe"             Color="{StaticResource ColorSafe}" />
+      <SolidColorBrush x:Key="BrushWarning"          Color="{StaticResource ColorWarning}" />
+      <SolidColorBrush x:Key="BrushDanger"           Color="{StaticResource ColorDanger}" />
+    </ResourceDictionary>
+  </Styles.Resources>
+
+  <!-- ─── WINDOW ─── -->
+  <Style Selector="Window">
+    <Setter Property="FontFamily" Value="Inter,Segoe UI,Arial,sans-serif" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+  </Style>
+
+  <!-- ─── SCROLLBAR ─── -->
+  <Style Selector="ScrollViewer">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector="ScrollBar">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector="ScrollBar /template/ Track /template/ Thumb">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#30FFFFFF" />
+    </Setter>
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="MinWidth" Value="4" />
+    <Setter Property="MinHeight" Value="4" />
+  </Style>
+
+  <!-- ─── TEXT ─── -->
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="FontFamily" Value="Inter,Segoe UI,Arial,sans-serif" />
+  </Style>
+  <Style Selector="TextBlock.muted">
+    <Setter Property="Foreground" Value="{StaticResource BrushTextSecondary}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+  <Style Selector="TextBlock.heading">
+    <Setter Property="FontSize" Value="20" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+  </Style>
+  <Style Selector="TextBlock.subheading">
+    <Setter Property="FontSize" Value="14" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+  </Style>
+  <Style Selector="TextBlock.value-large">
+    <Setter Property="FontSize" Value="32" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+  </Style>
+  <Style Selector="TextBlock.primary">
+    <Setter Property="Foreground" Value="{StaticResource BrushPrimary}" />
+  </Style>
+  <Style Selector="TextBlock.page-title">
+    <Setter Property="FontSize" Value="22" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+  </Style>
+
+  <!-- ─── GLASS CARD ─── -->
+  <Style Selector="Border.card">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorCard}" />
+    </Setter>
+    <Setter Property="CornerRadius" Value="16" />
+    <Setter Property="Padding" Value="20" />
+    <Setter Property="BorderBrush">
+      <SolidColorBrush Color="{StaticResource ColorBorder}" />
+    </Setter>
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="BoxShadow" Value="0 8 32 0 #40000000" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.2" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="Border.card:pointerover">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorCardHover}" />
+    </Setter>
+  </Style>
+
+  <Style Selector="Border.card-compact">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorCard}" />
+    </Setter>
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Padding" Value="14" />
+    <Setter Property="BorderBrush">
+      <SolidColorBrush Color="{StaticResource ColorBorder}" />
+    </Setter>
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="Border.card-dark">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorCardDark}" />
+    </Setter>
+    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="Padding" Value="12" />
+    <Setter Property="BorderBrush">
+      <SolidColorBrush Color="{StaticResource ColorBorder}" />
+    </Setter>
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <!-- ─── SEPARATOR ─── -->
+  <Style Selector="Border.separator">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorBorder}" />
+    </Setter>
+    <Setter Property="Height" Value="1" />
+  </Style>
+  <Style Selector="Border.separator-v">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorBorder}" />
+    </Setter>
+    <Setter Property="Width" Value="1" />
+  </Style>
+
+  <!-- ─── STATUS BADGE ─── -->
+  <Style Selector="Border.status-badge">
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="Padding" Value="8,3" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+  <Style Selector="Border.status-badge-safe">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#1500E896" />
+    </Setter>
+    <Setter Property="BorderBrush">
+      <SolidColorBrush Color="#3000E896" />
+    </Setter>
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="Padding" Value="8,3" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+  <Style Selector="Border.status-badge-warn">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#15FFB300" />
+    </Setter>
+    <Setter Property="BorderBrush">
+      <SolidColorBrush Color="#30FFB300" />
+    </Setter>
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="Padding" Value="8,3" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+  <Style Selector="Border.status-badge-danger">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#15FF4466" />
+    </Setter>
+    <Setter Property="BorderBrush">
+      <SolidColorBrush Color="#30FF4466" />
+    </Setter>
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="Padding" Value="8,3" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <!-- ─── PROGRESS BAR ─── -->
+  <Style Selector="ProgressBar">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#40FFFFFF" />
+    </Setter>
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="Height" Value="6" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Value" Duration="0:0:0.4" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="ProgressBar.primary /template/ Border#PART_Indicator">
+    <Setter Property="Background" Value="{StaticResource BrushPrimary}" />
+    <Setter Property="CornerRadius" Value="4" />
+  </Style>
+  <Style Selector="ProgressBar.safe /template/ Border#PART_Indicator">
+    <Setter Property="Background" Value="{StaticResource BrushSafe}" />
+    <Setter Property="CornerRadius" Value="4" />
+  </Style>
+  <Style Selector="ProgressBar.warning /template/ Border#PART_Indicator">
+    <Setter Property="Background" Value="{StaticResource BrushWarning}" />
+    <Setter Property="CornerRadius" Value="4" />
+  </Style>
+  <Style Selector="ProgressBar.danger /template/ Border#PART_Indicator">
+    <Setter Property="Background" Value="{StaticResource BrushDanger}" />
+    <Setter Property="CornerRadius" Value="4" />
+  </Style>
+
+  <!-- ─── BUTTONS ─── -->
+  <Style Selector="Button">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorCard}" />
+    </Setter>
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="BorderBrush">
+      <SolidColorBrush Color="{StaticResource ColorBorder}" />
+    </Setter>
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="Padding" Value="16,8" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.15" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="Button:pointerover /template/ ContentPresenter">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorCardHover}" />
+    </Setter>
+  </Style>
+  <Style Selector="Button:pressed /template/ ContentPresenter">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#25FFFFFF" />
+    </Setter>
+  </Style>
+
+  <Style Selector="Button.primary">
+    <Setter Property="Background" Value="{StaticResource BrushPrimary}" />
+    <Setter Property="Foreground" Value="#040C1A" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#22DDB8" />
+    </Setter>
+  </Style>
+
+  <Style Selector="Button.danger">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#20FF4466" />
+    </Setter>
+    <Setter Property="Foreground" Value="{StaticResource BrushDanger}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushDanger}" />
+  </Style>
+
+  <Style Selector="Button.icon-btn">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="8" />
+    <Setter Property="CornerRadius" Value="8" />
+  </Style>
+
+  <!-- ─── NAV ITEM ─── -->
+  <Style Selector="Button.nav-item">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextSecondary}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="Padding" Value="12,10" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.15" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="Button.nav-item:pointerover /template/ ContentPresenter">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#1200F0C8" />
+    </Setter>
+  </Style>
+  <Style Selector="Button.nav-item.selected /template/ ContentPresenter">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#2000F0C8" />
+    </Setter>
+  </Style>
+  <Style Selector="Button.nav-item.selected">
+    <Setter Property="Foreground" Value="{StaticResource BrushPrimary}" />
+  </Style>
+
+  <!-- ─── TEXTBOX ─── -->
+  <Style Selector="TextBox">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorCardDark}" />
+    </Setter>
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="BorderBrush">
+      <SolidColorBrush Color="{StaticResource ColorBorder}" />
+    </Setter>
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="Padding" Value="12,8" />
+    <Setter Property="CaretBrush" Value="{StaticResource BrushPrimary}" />
+  </Style>
+  <Style Selector="TextBox:focus">
+    <Setter Property="BorderBrush" Value="{StaticResource BrushPrimary}" />
+  </Style>
+
+  <!-- ─── COMBOBOX ─── -->
+  <Style Selector="ComboBox">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorCardDark}" />
+    </Setter>
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="BorderBrush">
+      <SolidColorBrush Color="{StaticResource ColorBorder}" />
+    </Setter>
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="Padding" Value="12,8" />
+  </Style>
+
+  <!-- ─── CHECKBOX / SLIDER ─── -->
+  <Style Selector="CheckBox">
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+  </Style>
+  <Style Selector="Slider">
+    <Setter Property="Foreground" Value="{StaticResource BrushPrimary}" />
+  </Style>
+
+  <!-- ─── LIST BOX ─── -->
+  <Style Selector="ListBox">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="ListBoxItem">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="CornerRadius" Value="10" />
+  </Style>
+  <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background">
+      <SolidColorBrush Color="#2000F0C8" />
+    </Setter>
+  </Style>
+
+  <!-- ─── SEPARATOR ─── -->
+  <Style Selector="Separator">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorBorder}" />
+    </Setter>
+    <Setter Property="Height" Value="1" />
+    <Setter Property="Margin" Value="0,4" />
+  </Style>
+
+  <!-- ─── NUMERIC UPDOWN ─── -->
+  <Style Selector="NumericUpDown">
+    <Setter Property="Background">
+      <SolidColorBrush Color="{StaticResource ColorCardDark}" />
+    </Setter>
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="BorderBrush">
+      <SolidColorBrush Color="{StaticResource ColorBorder}" />
+    </Setter>
+    <Setter Property="CornerRadius" Value="10" />
+  </Style>
+
+</Styles>

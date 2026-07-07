@@ -1,0 +1,414 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GreenVision.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             xmlns:converters="using:GreenVision.Converters"
+             xmlns:mi="using:Material.Icons.Avalonia"
+             x:Class="GreenVision.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel"
+             Background="Transparent">
+
+  <UserControl.Resources>
+    <converters:StringToColorBrushConverter x:Key="StringToBrush" />
+    <converters:StringToMaterialIconKindConverter x:Key="StringToIcon" />
+  </UserControl.Resources>
+
+  <Grid RowDefinitions="Auto,*" Margin="0">
+
+    <!-- ── TAB ROW ── -->
+    <Border Grid.Row="0" Background="#20FFFFFF"
+            BorderBrush="#30FFFFFF" BorderThickness="0,0,0,1" Padding="16,0">
+      <StackPanel Orientation="Horizontal" Spacing="0">
+        <Button Classes="tab" Classes.tabactive="{Binding IsOverviewTab}"
+                Content="Overview"
+                Command="{Binding SelectTabCommand}" CommandParameter="Overview" />
+        <Button Classes="tab" Classes.tabactive="{Binding IsSensorsTab}"
+                Content="Sensors"
+                Command="{Binding SelectTabCommand}" CommandParameter="Sensors" />
+        <Button Classes="tab" Classes.tabactive="{Binding IsAlarmsTab}"
+                Content="Alarms"
+                Command="{Binding SelectTabCommand}" CommandParameter="Alarms" />
+      </StackPanel>
+    </Border>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- OVERVIEW TAB                                                       -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <Grid Grid.Row="1" RowDefinitions="170,*,160" IsVisible="{Binding IsOverviewTab}">
+
+      <!-- ROW 1: Tower Lamp + 6 Sensor cards -->
+      <Grid Grid.Row="0" ColumnDefinitions="150,*,*,*,*,*,*" Margin="12,10,12,6">
+
+        <!-- Tower Lamp -->
+        <Border Grid.Column="0" Classes="card" Padding="12" Margin="0,0,6,0">
+          <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="6">
+            <TextBlock Text="TOWER LAMP" FontSize="9" Classes="muted"
+                       HorizontalAlignment="Center" FontWeight="SemiBold" />
+            <Border Width="64" Height="64" CornerRadius="32"
+                    Background="{Binding TowerLampColor, Converter={StaticResource StringToBrush}}"
+                    BoxShadow="0 0 24 0 #60000000"
+                    HorizontalAlignment="Center">
+              <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="1">
+                <mi:MaterialIcon Kind="{Binding TowerLampIcon, Converter={StaticResource StringToIcon}}"
+                                 Width="26" Height="26" Foreground="White"
+                                 HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding TowerLampStatus}" FontSize="8" FontWeight="Bold"
+                           HorizontalAlignment="Center" Foreground="White" TextAlignment="Center" />
+              </StackPanel>
+            </Border>
+            <StackPanel Spacing="2" HorizontalAlignment="Center">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Ellipse Width="6" Height="6"><Ellipse.Fill><SolidColorBrush Color="#00E896"/></Ellipse.Fill></Ellipse>
+                <TextBlock Text="SAFE" FontSize="8" Classes="muted" VerticalAlignment="Center"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Ellipse Width="6" Height="6"><Ellipse.Fill><SolidColorBrush Color="#FFB300"/></Ellipse.Fill></Ellipse>
+                <TextBlock Text="WARN" FontSize="8" Classes="muted" VerticalAlignment="Center"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Ellipse Width="6" Height="6"><Ellipse.Fill><SolidColorBrush Color="#FF4466"/></Ellipse.Fill></Ellipse>
+                <TextBlock Text="DANGER" FontSize="8" Classes="muted" VerticalAlignment="Center"/>
+              </StackPanel>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <!-- PM2.5 -->
+        <Border Grid.Column="1" Classes="card" Padding="14,12" Margin="3,0">
+          <StackPanel Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <mi:MaterialIcon Kind="{Binding Pm25Card.Icon, Converter={StaticResource StringToIcon}}"
+                               Width="14" Height="14"
+                               Foreground="{Binding Pm25Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+              <TextBlock Text="PM2.5" FontSize="11" FontWeight="SemiBold" Classes="muted" />
+            </StackPanel>
+            <TextBlock Text="{Binding Pm25Card.DisplayValue}" FontSize="28" FontWeight="Bold"
+                       Foreground="{Binding Pm25Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+            <TextBlock Text="μg/m³" FontSize="10" Classes="muted" />
+            <ProgressBar Value="{Binding Pm25Card.NormalizedValue}" Minimum="0" Maximum="1"
+                         Classes="primary" Height="4" CornerRadius="2" />
+            <TextBlock Text="{Binding Pm25Card.StatusText}" FontSize="10" FontWeight="SemiBold"
+                       Foreground="{Binding Pm25Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+          </StackPanel>
+        </Border>
+
+        <!-- PM10 -->
+        <Border Grid.Column="2" Classes="card" Padding="14,12" Margin="3,0">
+          <StackPanel Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <mi:MaterialIcon Kind="{Binding Pm10Card.Icon, Converter={StaticResource StringToIcon}}"
+                               Width="14" Height="14"
+                               Foreground="{Binding Pm10Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+              <TextBlock Text="PM10" FontSize="11" FontWeight="SemiBold" Classes="muted" />
+            </StackPanel>
+            <TextBlock Text="{Binding Pm10Card.DisplayValue}" FontSize="28" FontWeight="Bold"
+                       Foreground="{Binding Pm10Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+            <TextBlock Text="μg/m³" FontSize="10" Classes="muted" />
+            <ProgressBar Value="{Binding Pm10Card.NormalizedValue}" Minimum="0" Maximum="1"
+                         Classes="primary" Height="4" CornerRadius="2" />
+            <TextBlock Text="{Binding Pm10Card.StatusText}" FontSize="10" FontWeight="SemiBold"
+                       Foreground="{Binding Pm10Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+          </StackPanel>
+        </Border>
+
+        <!-- NH3 -->
+        <Border Grid.Column="3" Classes="card" Padding="14,12" Margin="3,0">
+          <StackPanel Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <mi:MaterialIcon Kind="{Binding Nh3Card.Icon, Converter={StaticResource StringToIcon}}"
+                               Width="14" Height="14"
+                               Foreground="{Binding Nh3Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+              <TextBlock Text="NH₃" FontSize="11" FontWeight="SemiBold" Classes="muted" />
+            </StackPanel>
+            <TextBlock Text="{Binding Nh3Card.DisplayValue}" FontSize="28" FontWeight="Bold"
+                       Foreground="{Binding Nh3Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+            <TextBlock Text="ppm" FontSize="10" Classes="muted" />
+            <ProgressBar Value="{Binding Nh3Card.NormalizedValue}" Minimum="0" Maximum="1"
+                         Classes="primary" Height="4" CornerRadius="2" />
+            <TextBlock Text="{Binding Nh3Card.StatusText}" FontSize="10" FontWeight="SemiBold"
+                       Foreground="{Binding Nh3Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+          </StackPanel>
+        </Border>
+
+        <!-- CO -->
+        <Border Grid.Column="4" Classes="card" Padding="14,12" Margin="3,0">
+          <StackPanel Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <mi:MaterialIcon Kind="{Binding CoCard.Icon, Converter={StaticResource StringToIcon}}"
+                               Width="14" Height="14"
+                               Foreground="{Binding CoCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+              <TextBlock Text="CO" FontSize="11" FontWeight="SemiBold" Classes="muted" />
+            </StackPanel>
+            <TextBlock Text="{Binding CoCard.DisplayValue}" FontSize="28" FontWeight="Bold"
+                       Foreground="{Binding CoCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+            <TextBlock Text="ppm" FontSize="10" Classes="muted" />
+            <ProgressBar Value="{Binding CoCard.NormalizedValue}" Minimum="0" Maximum="1"
+                         Classes="primary" Height="4" CornerRadius="2" />
+            <TextBlock Text="{Binding CoCard.StatusText}" FontSize="10" FontWeight="SemiBold"
+                       Foreground="{Binding CoCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+          </StackPanel>
+        </Border>
+
+        <!-- TEMP -->
+        <Border Grid.Column="5" Classes="card" Padding="14,12" Margin="3,0">
+          <StackPanel Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <mi:MaterialIcon Kind="{Binding TempCard.Icon, Converter={StaticResource StringToIcon}}"
+                               Width="14" Height="14"
+                               Foreground="{Binding TempCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+              <TextBlock Text="TEMP" FontSize="11" FontWeight="SemiBold" Classes="muted" />
+            </StackPanel>
+            <TextBlock Text="{Binding TempCard.DisplayValue}" FontSize="28" FontWeight="Bold"
+                       Foreground="{Binding TempCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+            <TextBlock Text="°C" FontSize="10" Classes="muted" />
+            <ProgressBar Value="{Binding TempCard.NormalizedValue}" Minimum="0" Maximum="1"
+                         Classes="primary" Height="4" CornerRadius="2" />
+            <TextBlock Text="{Binding TempCard.StatusText}" FontSize="10" FontWeight="SemiBold"
+                       Foreground="{Binding TempCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+          </StackPanel>
+        </Border>
+
+        <!-- HUMID -->
+        <Border Grid.Column="6" Classes="card" Padding="14,12" Margin="6,0,0,0">
+          <StackPanel Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <mi:MaterialIcon Kind="{Binding HumidityCard.Icon, Converter={StaticResource StringToIcon}}"
+                               Width="14" Height="14"
+                               Foreground="{Binding HumidityCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+              <TextBlock Text="HUMID" FontSize="11" FontWeight="SemiBold" Classes="muted" />
+            </StackPanel>
+            <TextBlock Text="{Binding HumidityCard.DisplayValue}" FontSize="28" FontWeight="Bold"
+                       Foreground="{Binding HumidityCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+            <TextBlock Text="%" FontSize="10" Classes="muted" />
+            <ProgressBar Value="{Binding HumidityCard.NormalizedValue}" Minimum="0" Maximum="1"
+                         Classes="primary" Height="4" CornerRadius="2" />
+            <TextBlock Text="{Binding HumidityCard.StatusText}" FontSize="10" FontWeight="SemiBold"
+                       Foreground="{Binding HumidityCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <!-- ROW 2: Charts -->
+      <Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="12,0,12,8">
+
+        <!-- Env chart -->
+        <Border Grid.Column="0" Classes="card" Padding="0" Margin="0,0,6,0">
+          <Grid RowDefinitions="Auto,*">
+            <StackPanel Grid.Row="0" Margin="20,16,20,4">
+              <TextBlock Text="Environmental Monitoring" FontSize="13" FontWeight="SemiBold" />
+              <TextBlock Text="Temperature · Humidity · Real-time" FontSize="11" Classes="muted" />
+            </StackPanel>
+            <lvc:CartesianChart Grid.Row="1"
+                                Series="{Binding TempHumiditySeries}"
+                                XAxes="{Binding XAxes}"
+                                YAxes="{Binding YAxesTemp}"
+                                LegendPosition="Top"
+                                Background="Transparent"
+                                AnimationsSpeed="0:0:0.4"
+                                Margin="8,0,8,8" />
+          </Grid>
+        </Border>
+
+        <!-- Air quality chart -->
+        <Border Grid.Column="1" Classes="card" Padding="0" Margin="6,0,0,0">
+          <Grid RowDefinitions="Auto,*">
+            <StackPanel Grid.Row="0" Margin="20,16,20,4">
+              <TextBlock Text="Air Quality Index" FontSize="13" FontWeight="SemiBold" />
+              <TextBlock Text="PM2.5 · CO concentration trend" FontSize="11" Classes="muted" />
+            </StackPanel>
+            <lvc:CartesianChart Grid.Row="1"
+                                Series="{Binding AirQualitySeries}"
+                                XAxes="{Binding XAxes}"
+                                YAxes="{Binding YAxesAir}"
+                                LegendPosition="Top"
+                                Background="Transparent"
+                                AnimationsSpeed="0:0:0.4"
+                                Margin="8,0,8,8" />
+          </Grid>
+        </Border>
+      </Grid>
+
+      <!-- ROW 3: Recent Alarms (full width) -->
+      <Border Grid.Row="2" Classes="card" Padding="0" Margin="12,0,12,12">
+        <Grid RowDefinitions="Auto,*">
+          <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,12,20,8" Spacing="10">
+            <mi:MaterialIcon Kind="AlertCircleOutline" Width="18" Height="18"
+                             Foreground="#FF4466" VerticalAlignment="Center" />
+            <TextBlock Text="Recent Alarms" FontSize="13" FontWeight="SemiBold"
+                       VerticalAlignment="Center" />
+            <Border Background="#15FF4466" CornerRadius="10" Padding="8,2"
+                    BorderBrush="#30FF4466" BorderThickness="1">
+              <TextBlock Text="{Binding RecentAlarms.Count}" FontSize="11"
+                         Foreground="#FF4466" FontWeight="Bold" />
+            </Border>
+          </StackPanel>
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="12,0,12,10">
+            <ItemsControl ItemsSource="{Binding RecentAlarms}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <UniformGrid Columns="2" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Margin="3,2" Padding="12,7" CornerRadius="8"
+                          Background="#15FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                      <Ellipse Grid.Column="0" Width="6" Height="6"
+                               VerticalAlignment="Center" Margin="0,0,10,0">
+                        <Ellipse.Fill><SolidColorBrush Color="#FF4466"/></Ellipse.Fill>
+                      </Ellipse>
+                      <TextBlock Grid.Column="1" Text="{Binding Message}"
+                                 FontSize="11" TextTrimming="CharacterEllipsis"
+                                 VerticalAlignment="Center" />
+                      <TextBlock Grid.Column="2" Text="{Binding FormattedTimestamp}"
+                                 FontSize="10" Classes="muted"
+                                 FontFamily="Consolas,Courier New,monospace"
+                                 VerticalAlignment="Center" Margin="8,0,0,0" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </Grid>
+      </Border>
+    </Grid>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- SENSORS TAB                                                        -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <ScrollViewer Grid.Row="1" IsVisible="{Binding IsSensorsTab}"
+                  VerticalScrollBarVisibility="Auto" Padding="12">
+      <ItemsControl ItemsSource="{Binding AllSensors}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <UniformGrid Columns="3" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:SensorCardViewModel">
+            <Border Margin="6" Classes="card">
+              <StackPanel Spacing="14">
+                <!-- Header -->
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                  <mi:MaterialIcon Kind="{Binding Icon, Converter={StaticResource StringToIcon}}"
+                                   Width="28" Height="28"
+                                   Foreground="{Binding StatusColor, Converter={StaticResource StringToBrush}}" />
+                  <StackPanel VerticalAlignment="Center" Spacing="1">
+                    <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Unit}" FontSize="11" Classes="muted" />
+                  </StackPanel>
+                  <Border Classes="status-badge" Padding="8,3" CornerRadius="8" Margin="0,0,0,0"
+                          HorizontalAlignment="Right">
+                    <Border.Background>
+                      <SolidColorBrush Color="#20FFFFFF" />
+                    </Border.Background>
+                    <TextBlock Text="{Binding StatusText}" FontSize="10" FontWeight="Bold"
+                               Foreground="{Binding StatusColor, Converter={StaticResource StringToBrush}}" />
+                  </Border>
+                </StackPanel>
+
+                <!-- Value -->
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                  <TextBlock Text="{Binding DisplayValue}" FontSize="44" FontWeight="Bold" LineHeight="44"
+                             Foreground="{Binding StatusColor, Converter={StaticResource StringToBrush}}" />
+                  <TextBlock Text="{Binding Unit}" FontSize="16" Classes="muted"
+                             VerticalAlignment="Bottom" Margin="0,0,0,6" />
+                </StackPanel>
+
+                <!-- Progress bar -->
+                <ProgressBar Value="{Binding NormalizedValue}" Minimum="0" Maximum="1"
+                             Classes="primary" Height="6" CornerRadius="3" />
+
+                <!-- Thresholds -->
+                <Grid ColumnDefinitions="*,*">
+                  <StackPanel Grid.Column="0" Spacing="2">
+                    <TextBlock Text="WARNING" FontSize="9" Foreground="#FFB300" FontWeight="SemiBold" />
+                    <TextBlock FontSize="12" Classes="muted">
+                      <Run Text="{Binding WarningThreshold, StringFormat='{}{0:F0}'}" />
+                      <Run Text=" " /><Run Text="{Binding Unit}" />
+                    </TextBlock>
+                  </StackPanel>
+                  <StackPanel Grid.Column="1" Spacing="2">
+                    <TextBlock Text="DANGER" FontSize="9" Foreground="#FF4466" FontWeight="SemiBold" />
+                    <TextBlock FontSize="12" Classes="muted">
+                      <Run Text="{Binding DangerThreshold, StringFormat='{}{0:F0}'}" />
+                      <Run Text=" " /><Run Text="{Binding Unit}" />
+                    </TextBlock>
+                  </StackPanel>
+                </Grid>
+              </StackPanel>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- ALARMS TAB                                                         -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <Grid Grid.Row="1" RowDefinitions="Auto,*" IsVisible="{Binding IsAlarmsTab}"
+          Margin="12">
+      <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,12,0,12">
+        <TextBlock Text="Alarm History" FontSize="18" FontWeight="Bold"
+                   VerticalAlignment="Center" />
+        <Border Background="#15FF4466" CornerRadius="10" Padding="10,4"
+                BorderBrush="#30FF4466" BorderThickness="1">
+          <TextBlock Text="{Binding RecentAlarms.Count}" FontSize="13"
+                     Foreground="#FF4466" FontWeight="Bold" />
+        </Border>
+      </StackPanel>
+
+      <Border Grid.Row="1" Classes="card" Padding="0">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
+          <ItemsControl ItemsSource="{Binding RecentAlarms}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Margin="0,3" Padding="16,12" CornerRadius="10"
+                        Background="#15FFFFFF" BorderBrush="#25FFFFFF" BorderThickness="1">
+                  <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Border Grid.Column="0" Width="8" Height="8" CornerRadius="4"
+                            VerticalAlignment="Center" Margin="0,0,14,0">
+                      <Border.Background><SolidColorBrush Color="#FF4466"/></Border.Background>
+                    </Border>
+                    <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                      <TextBlock Text="{Binding Message}" FontSize="12" FontWeight="Medium" />
+                      <TextBlock Text="{Binding SensorName}" FontSize="10" Classes="muted" />
+                    </StackPanel>
+                    <TextBlock Grid.Column="2" Text="{Binding FormattedTimestamp}"
+                               FontSize="11" Classes="muted"
+                               FontFamily="Consolas,Courier New,monospace"
+                               VerticalAlignment="Center" Margin="14,0,0,0" />
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </Border>
+    </Grid>
+
+  </Grid>
+
+  <UserControl.Styles>
+    <Style Selector="Button.tab">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#6A8099" />
+      <Setter Property="BorderThickness" Value="0,0,0,2" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="Padding" Value="18,13" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button.tab.tabactive">
+      <Setter Property="Foreground" Value="#00F0C8" />
+      <Setter Property="BorderBrush" Value="#00F0C8" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Button.tab:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+  </UserControl.Styles>
+
+</UserControl>

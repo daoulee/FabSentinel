@@ -1,0 +1,43 @@
+# ── .NET build artifacts ─────────────────────────────────────────────────────
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# ── IDE ──────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.DotSettings
+
+# ── macOS ────────────────────────────────────────────────────────────────────
+.DS_Store
+**/.DS_Store
+
+# ── SECURITY: Secrets & credentials ─────────────────────────────────────────
+server/.env
+*.env
+*.key
+*.pem
+*.pfx
+secrets.json
+appsettings.Production.json
+
+# ── Python (server venv) ─────────────────────────────────────────────────────
+server/.venv/
+server/__pycache__/
+server/*.pyc
+
+# ── Large media assets ───────────────────────────────────────────────────────
+Assets/Videos/*.mp4
+Assets/Videos/*.webm
+Assets/Videos/*.mov
+Assets/Videos/*.mkv
+
+# ── SQLite DB files (runtime generated) ─────────────────────────────────────
+*.db
+*.db-shm
+*.db-wal
+
+# ── Publish output ───────────────────────────────────────────────────────────
+publish/

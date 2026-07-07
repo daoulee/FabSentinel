@@ -1,0 +1,125 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GreenVision.ViewModels"
+             xmlns:converters="using:GreenVision.Converters"
+             xmlns:mi="using:Material.Icons.Avalonia"
+             x:Class="GreenVision.Views.HardwareView"
+             x:DataType="vm:HardwareViewModel"
+             Background="Transparent">
+
+  <UserControl.Resources>
+    <converters:StringToColorBrushConverter x:Key="StringToBrush" />
+    <converters:StringToMaterialIconKindConverter x:Key="StringToIcon" />
+  </UserControl.Resources>
+
+  <Grid RowDefinitions="Auto,Auto,*" Margin="12">
+
+    <!-- Header -->
+    <StackPanel Grid.Row="0" Spacing="2" Margin="0,0,0,12">
+      <TextBlock Text="Hardware Status" Classes="page-title" />
+      <TextBlock Text="Real-time device monitoring and connectivity" Classes="muted" />
+    </StackPanel>
+
+    <!-- Summary bar -->
+    <Border Grid.Row="1" Background="#25FFFFFF" CornerRadius="12"
+            BorderBrush="#30FFFFFF" BorderThickness="1" Margin="0,0,0,12" Padding="16,12">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+          <Ellipse Width="10" Height="10" VerticalAlignment="Center"
+                   Fill="{Binding SystemHealthColor, Converter={StaticResource StringToBrush}}" />
+          <TextBlock Text="{Binding SystemHealthText}" FontSize="14" FontWeight="SemiBold"
+                     Foreground="{Binding SystemHealthColor, Converter={StaticResource StringToBrush}}"
+                     VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+          <TextBlock Text="{Binding OnlineCount}" FontSize="18" FontWeight="Bold"
+                     Foreground="#00E896" />
+          <TextBlock Text="/" FontSize="16" Foreground="#6A8099" VerticalAlignment="Center" />
+          <TextBlock Text="{Binding TotalCount}" FontSize="18" FontWeight="Bold"
+                     Foreground="#F0F6FF" />
+          <TextBlock Text="Devices Online" FontSize="12" Foreground="#6A8099"
+                     VerticalAlignment="Center" Margin="4,0,0,0" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Device cards grid -->
+    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+      <ItemsControl ItemsSource="{Binding DeviceCards}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <UniformGrid Columns="3" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:HardwareCardViewModel">
+            <Border Margin="6" Padding="16" Background="#25FFFFFF"
+                    CornerRadius="12" BorderBrush="#30FFFFFF" BorderThickness="1">
+              <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+
+                <!-- Header: Icon + Name + Status dot -->
+                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,12">
+                  <mi:MaterialIcon Grid.Column="0"
+                                  Kind="{Binding Icon, Converter={StaticResource StringToIcon}}"
+                                  Width="22" Height="22"
+                                  VerticalAlignment="Center" Margin="0,0,10,0" />
+                  <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                    <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold"
+                               Foreground="#F0F6FF" />
+                    <TextBlock Text="{Binding DeviceType}" FontSize="10" Foreground="#6A8099" />
+                  </StackPanel>
+                  <Border Grid.Column="2" Padding="6,3" CornerRadius="6"
+                          Background="{Binding StatusColor, Converter={StaticResource StringToBrush}}">
+                    <TextBlock Text="{Binding StatusText}" FontSize="10" FontWeight="Bold"
+                               Foreground="White" />
+                  </Border>
+                </Grid>
+
+                <Border Grid.Row="1" Height="1" Background="#20FFFFFF" Margin="0,0,0,10" />
+
+                <!-- Stats -->
+                <Grid Grid.Row="2" ColumnDefinitions="*,*" Margin="0,0,0,10">
+                  <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock Text="TEMPERATURE" FontSize="9" Foreground="#6A8099" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Temperature}" FontSize="16" FontWeight="Bold"
+                               Foreground="#F0F6FF" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="1" Spacing="4">
+                    <TextBlock Text="FIRMWARE" FontSize="9" Foreground="#6A8099" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding FirmwareVersion}" FontSize="12"
+                               Foreground="#00F0C8" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Connection quality bar -->
+                <StackPanel Grid.Row="3" Spacing="4" Margin="0,0,0,10">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="Connection Quality"
+                               FontSize="11" Foreground="#6A8099" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding ConnectionQuality, StringFormat='{}{0:F0}%'}"
+                               FontSize="11" Foreground="#00F0C8" FontWeight="SemiBold" />
+                  </Grid>
+                  <ProgressBar Value="{Binding ConnectionQuality}"
+                               Minimum="0" Maximum="100"
+                               Classes="primary" Height="6" />
+                </StackPanel>
+
+                <!-- Last seen + IP -->
+                <Grid Grid.Row="4" ColumnDefinitions="*,Auto">
+                  <TextBlock Grid.Column="0"
+                             Text="{Binding LastSeen, StringFormat='Last seen: {0}'}"
+                             FontSize="10" Foreground="#6A8099" VerticalAlignment="Center" />
+                  <TextBlock Grid.Column="1" Text="{Binding IpAddress}"
+                             FontSize="10" Foreground="#5A7090"
+                             FontFamily="Consolas,monospace" VerticalAlignment="Center" />
+                </Grid>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+
+  </Grid>
+</UserControl>
