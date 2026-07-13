@@ -10,9 +10,10 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 CAMERA_INDEX = 0
 PORT = 8080
 
-cap = cv2.VideoCapture(CAMERA_INDEX)
+cap = cv2.VideoCapture(CAMERA_INDEX, cv2.CAP_V4L2)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
 
 lock = threading.Lock()
 latest_frame = None
