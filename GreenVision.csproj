@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AnimatedImage.Avalonia" Version="2.1.4" />
     <PackageReference Include="Avalonia" Version="11.2.3" />
     <PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3" />
@@ -30,7 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Include="Assets\**" Exclude="Assets\Videos\*.mp4;Assets\Videos\*.mov;Assets\Videos\*.webm;Assets\Videos\*.mkv" />
+    <AvaloniaResource Include="Assets\Videos\fabroom.gif" />
     <AvaloniaResource Include="Styles\**" />
   </ItemGroup>
 

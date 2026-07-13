@@ -4,7 +4,7 @@
              xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
              xmlns:converters="using:GreenVision.Converters"
              xmlns:mi="using:Material.Icons.Avalonia"
-             xmlns:vlc="using:LibVLCSharp.Avalonia"
+             xmlns:ai="using:AnimatedImage.Avalonia"
              x:Class="GreenVision.Views.FabMonitoringView"
              x:DataType="vm:FabMonitoringViewModel"
              Background="Transparent">
@@ -179,8 +179,7 @@
         <Border Grid.Row="0" Background="#CC050A14" Padding="16,10" ZIndex="10">
           <Grid ColumnDefinitions="*,Auto">
             <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-              <!-- LIVE badge -->
-              <Border CornerRadius="5" Padding="8,3" Background="#B0FF0000">
+              <Border CornerRadius="5" Padding="8,3" Background="#B0FF2244">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                   <Ellipse Width="6" Height="6" Fill="White" VerticalAlignment="Center" />
                   <TextBlock Text="LIVE" FontSize="10" Foreground="White" FontWeight="Bold" />
@@ -193,7 +192,6 @@
                            FontSize="10" Foreground="#6A8099" />
               </StackPanel>
             </StackPanel>
-            <!-- Status chips -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
               <Border CornerRadius="5" Padding="7,3" Background="#1500E896" BorderBrush="#3000E896" BorderThickness="1">
                 <StackPanel Orientation="Horizontal" Spacing="4">
@@ -220,46 +218,484 @@
         <!-- Video + sensor overlay stack -->
         <Grid Grid.Row="1">
 
-          <!-- Layer 0: VLC video player -->
-          <vlc:VideoView x:Name="FabVideoView" />
+          <!-- Layer 0: Virtual Fab Floor Plan -->
+          <Grid Background="#04080F">
+            <Grid RowDefinitions="*,20,68" IsHitTestVisible="False">
 
-          <!-- Layer 1: Fallback placeholder (shown when no video file) -->
-          <Border x:Name="VideoPlaceholder" Background="#0A111E" IsVisible="True">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
-              <mi:MaterialIcon Kind="VideoOutline" Width="56" Height="56"
-                               Foreground="#1A3A5A" HorizontalAlignment="Center" />
-              <TextBlock Text="Fab Room Video Feed" FontSize="16" FontWeight="SemiBold"
-                         Foreground="#2A5070" HorizontalAlignment="Center" />
-              <TextBlock FontSize="12" Foreground="#1A3858" HorizontalAlignment="Center"
-                         TextAlignment="Center"
-                         Text="Place fabroom.mp4 in&#10;Assets/Videos/fabroom.mp4" />
-              <Border CornerRadius="8" Padding="14,6" Background="#0F2035"
-                      BorderBrush="#1A4060" BorderThickness="1"
-                      HorizontalAlignment="Center">
-                <TextBlock Text="yt-dlp -f &quot;bestvideo[ext=mp4]&quot; &lt;URL&gt; -o Assets/Videos/fabroom.mp4"
-                           FontSize="10" Foreground="#3A6080"
-                           FontFamily="Consolas,Courier New,monospace" />
+              <!-- ── PRODUCTION BAYS ── -->
+              <Grid Grid.Row="0" ColumnDefinitions="*,2,*,2,*,2,*">
+
+                <!-- Zone A: Lithography — Blue -->
+                <Border Grid.Column="0" Background="#07101C">
+                  <Grid RowDefinitions="30,*,24">
+                    <Border Grid.Row="0" Background="#0B1826" BorderBrush="#1A4060" BorderThickness="0,0,0,1">
+                      <Grid ColumnDefinitions="3,*">
+                        <Border Width="3" Background="#0077CC"/>
+                        <StackPanel Margin="8,0" VerticalAlignment="Center" Spacing="0">
+                          <TextBlock Text="ZONE A  ·  LITHO" FontSize="8" Foreground="#4AABE6"
+                                     FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          <TextBlock Text="Photolithography" FontSize="7" Foreground="#2A6888"/>
+                        </StackPanel>
+                      </Grid>
+                    </Border>
+                    <UniformGrid Grid.Row="1" Rows="6" Columns="1" Margin="5,4,5,4">
+                      <Border Margin="0,1" Background="#0C1928" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="SCANNER-A" FontSize="9" Foreground="#4AABE6" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="EUV 193nm · Lot #A4821" FontSize="6.5" Foreground="#2A5878"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#091522" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#FFB300" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="SCANNER-B" FontSize="9" Foreground="#4AABE6" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="ArF Immersion · Standby" FontSize="6.5" Foreground="#2A5878"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#2A1A00" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="IDLE" FontSize="7" Foreground="#FFB300" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#0C1928" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="TRACK-1" FontSize="9" Foreground="#4AABE6" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Resist Coat · Lot #A4820" FontSize="6.5" Foreground="#2A5878"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#091522" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="COATER-A" FontSize="9" Foreground="#4AABE6" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Resist TARC · Lot #A4819" FontSize="6.5" Foreground="#2A5878"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#0C1928" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="COATER-B" FontSize="9" Foreground="#4AABE6" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Resist OPL · Active" FontSize="6.5" Foreground="#2A5878"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#091522" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="DEVELOP" FontSize="9" Foreground="#4AABE6" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="TMAH Dev · Lot #A4818" FontSize="6.5" Foreground="#2A5878"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                    </UniformGrid>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="10,0">
+                      <Ellipse Width="8" Height="8" Fill="{Binding AllSensors[0].StatusColor, Converter={StaticResource StringToBrush}}"/>
+                      <TextBlock Text="PM2.5 SENSOR" FontSize="7" Foreground="#2A6888" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+
+                <Border Grid.Column="1" Background="#020508"/>
+
+                <!-- Zone B: Plasma Etch — Purple -->
+                <Border Grid.Column="2" Background="#0D0918">
+                  <Grid RowDefinitions="30,*,24">
+                    <Border Grid.Row="0" Background="#120D20" BorderBrush="#2E1860" BorderThickness="0,0,0,1">
+                      <Grid ColumnDefinitions="3,*">
+                        <Border Width="3" Background="#7744CC"/>
+                        <StackPanel Margin="8,0" VerticalAlignment="Center" Spacing="0">
+                          <TextBlock Text="ZONE B  ·  ETCH" FontSize="8" Foreground="#9966EE"
+                                     FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          <TextBlock Text="Plasma Etch" FontSize="7" Foreground="#5A3898"/>
+                        </StackPanel>
+                      </Grid>
+                    </Border>
+                    <UniformGrid Grid.Row="1" Rows="6" Columns="1" Margin="5,4,5,4">
+                      <Border Margin="0,1" Background="#130D22" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="ICP-1" FontSize="9" Foreground="#9966EE" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Si Etch · Lot #B2341" FontSize="6.5" Foreground="#3A2870"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#100B1E" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="ICP-2" FontSize="9" Foreground="#9966EE" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Metal Etch · Lot #B2339" FontSize="6.5" Foreground="#3A2870"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#130D22" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#FFB300" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="ICP-3" FontSize="9" Foreground="#9966EE" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Chamber Clean" FontSize="6.5" Foreground="#3A2870"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#2A1A00" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="IDLE" FontSize="7" Foreground="#FFB300" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#100B1E" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="CCP-1" FontSize="9" Foreground="#9966EE" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Oxide Etch · Active" FontSize="6.5" Foreground="#3A2870"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#130D22" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="CCP-2" FontSize="9" Foreground="#9966EE" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="SiN Etch · Lot #B2340" FontSize="6.5" Foreground="#3A2870"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#100B1E" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#4A7090" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="WET-BENCH" FontSize="9" Foreground="#9966EE" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="DHF Clean · Standby" FontSize="6.5" Foreground="#3A2870"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A1020" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="STD" FontSize="7" Foreground="#4A7090" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                    </UniformGrid>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="10,0">
+                      <Ellipse Width="8" Height="8" Fill="{Binding AllSensors[2].StatusColor, Converter={StaticResource StringToBrush}}"/>
+                      <TextBlock Text="NH₃ SENSOR" FontSize="7" Foreground="#5A3898" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+
+                <Border Grid.Column="3" Background="#020508"/>
+
+                <!-- Zone C: CVD — Teal -->
+                <Border Grid.Column="4" Background="#071310">
+                  <Grid RowDefinitions="30,*,24">
+                    <Border Grid.Row="0" Background="#091A15" BorderBrush="#154830" BorderThickness="0,0,0,1">
+                      <Grid ColumnDefinitions="3,*">
+                        <Border Width="3" Background="#00AA88"/>
+                        <StackPanel Margin="8,0" VerticalAlignment="Center" Spacing="0">
+                          <TextBlock Text="ZONE C  ·  CVD" FontSize="8" Foreground="#30C8A0"
+                                     FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          <TextBlock Text="Deposition" FontSize="7" Foreground="#1A8060"/>
+                        </StackPanel>
+                      </Grid>
+                    </Border>
+                    <UniformGrid Grid.Row="1" Rows="6" Columns="1" Margin="5,4,5,4">
+                      <Border Margin="0,1" Background="#0A1C16" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="LPCVD-1" FontSize="9" Foreground="#30C8A0" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="SiO₂ Dep · 850°C" FontSize="6.5" Foreground="#1A5040"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#081812" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="ALD-1" FontSize="9" Foreground="#30C8A0" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Al₂O₃ · 300 cycles" FontSize="6.5" Foreground="#1A5040"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#0A1C16" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#FFB300" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="ALD-2" FontSize="9" Foreground="#30C8A0" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="HfO₂ · Standby" FontSize="6.5" Foreground="#1A5040"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#2A1A00" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="IDLE" FontSize="7" Foreground="#FFB300" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#081812" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="PECVD" FontSize="9" Foreground="#30C8A0" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="SiN Dep · Active" FontSize="6.5" Foreground="#1A5040"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#0A1C16" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="PVD" FontSize="9" Foreground="#30C8A0" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Ti/TiN · Lot #C1122" FontSize="6.5" Foreground="#1A5040"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#081812" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="EPI" FontSize="9" Foreground="#30C8A0" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Si Epi · 1050°C" FontSize="6.5" Foreground="#1A5040"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                    </UniformGrid>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="10,0">
+                      <Ellipse Width="8" Height="8" Fill="{Binding AllSensors[3].StatusColor, Converter={StaticResource StringToBrush}}"/>
+                      <TextBlock Text="CO SENSOR" FontSize="7" Foreground="#1A8060" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+
+                <Border Grid.Column="5" Background="#020508"/>
+
+                <!-- Zone D: Metrology — Amber -->
+                <Border Grid.Column="6" Background="#110D05">
+                  <Grid RowDefinitions="30,*,24">
+                    <Border Grid.Row="0" Background="#181205" BorderBrush="#3C2808" BorderThickness="0,0,0,1">
+                      <Grid ColumnDefinitions="3,*">
+                        <Border Width="3" Background="#CC8800"/>
+                        <StackPanel Margin="8,0" VerticalAlignment="Center" Spacing="0">
+                          <TextBlock Text="ZONE D  ·  METRO" FontSize="8" Foreground="#CC9933"
+                                     FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          <TextBlock Text="Metrology" FontSize="7" Foreground="#7A5820"/>
+                        </StackPanel>
+                      </Grid>
+                    </Border>
+                    <UniformGrid Grid.Row="1" Rows="6" Columns="1" Margin="5,4,5,4">
+                      <Border Margin="0,1" Background="#181205" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="CD-SEM" FontSize="9" Foreground="#CC9933" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Gate CD · Lot #D7701" FontSize="6.5" Foreground="#5A3A10"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#150E04" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="E-SEM" FontSize="9" Foreground="#CC9933" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Defect Review · Active" FontSize="6.5" Foreground="#5A3A10"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#181205" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#FFB300" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="OCD" FontSize="9" Foreground="#CC9933" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Film Thickness · Standby" FontSize="6.5" Foreground="#5A3A10"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#2A1A00" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="IDLE" FontSize="7" Foreground="#FFB300" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#150E04" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="OPTICAL-1" FontSize="9" Foreground="#CC9933" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Overlay · Lot #D7700" FontSize="6.5" Foreground="#5A3A10"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#181205" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#00E896" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="REVIEW" FontSize="9" Foreground="#CC9933" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Defect Class · Active" FontSize="6.5" Foreground="#5A3A10"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A2A18" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="RUN" FontSize="7" Foreground="#00E896" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <Border Margin="0,1" Background="#150E04" CornerRadius="3">
+                        <Grid ColumnDefinitions="8,*,Auto" Margin="10,0" VerticalAlignment="Center">
+                          <Ellipse Width="7" Height="7" Fill="#4A7090" VerticalAlignment="Center"/>
+                          <StackPanel Grid.Column="1" Margin="8,0" Spacing="1" VerticalAlignment="Center">
+                            <TextBlock Text="ADC" FontSize="9" Foreground="#CC9933" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold"/>
+                            <TextBlock Text="Auto Defect · Standby" FontSize="6.5" Foreground="#5A3A10"/>
+                          </StackPanel>
+                          <Border Grid.Column="2" Background="#0A1020" CornerRadius="3" Padding="7,2" VerticalAlignment="Center">
+                            <TextBlock Text="STD" FontSize="7" Foreground="#4A7090" FontWeight="Bold" FontFamily="Consolas,Courier New,monospace"/>
+                          </Border>
+                        </Grid>
+                      </Border>
+                    </UniformGrid>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="10,0">
+                      <Ellipse Width="8" Height="8" Fill="{Binding AllSensors[4].StatusColor, Converter={StaticResource StringToBrush}}"/>
+                      <TextBlock Text="TEMP SENSOR" FontSize="7" Foreground="#7A5820" FontFamily="Consolas,Courier New,monospace" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+
+              </Grid>
+
+              <!-- ── MAIN AISLE ── -->
+              <Border Grid.Row="1" Background="#060C16" BorderBrush="#0F2235" BorderThickness="0,1,0,1">
+                <Grid ColumnDefinitions="Auto,*,Auto" Margin="16,0">
+                  <TextBlock Grid.Column="0" Text="━  MAIN AISLE" FontSize="7.5" Foreground="#2A5878"
+                             FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                  <Border Grid.Column="1" Height="1" Background="#142A3E" VerticalAlignment="Center" Margin="10,0"/>
+                  <TextBlock Grid.Column="2" Text="ISO CLASS 5  ·  SEMICONDUCTOR CLEAN ROOM  ━" FontSize="7.5" Foreground="#2A5878"
+                             FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                </Grid>
               </Border>
-            </StackPanel>
-          </Border>
 
-          <!-- Layer 2: Gradient vignette for text readability -->
-          <Border IsHitTestVisible="False">
-            <Border.Background>
-              <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                <GradientStop Color="#B0020610" Offset="0" />
-                <GradientStop Color="#30000000" Offset="0.2" />
-                <GradientStop Color="#30000000" Offset="0.75" />
-                <GradientStop Color="#D0020610" Offset="1" />
-              </LinearGradientBrush>
-            </Border.Background>
-          </Border>
+              <!-- ── SUPPORT ZONES ── -->
+              <Grid Grid.Row="2" ColumnDefinitions="*,1,*,1,*">
+
+                <!-- HVAC / FFU -->
+                <Border Grid.Column="0" Background="#070E18" BorderBrush="#102030" BorderThickness="0,0,0,1">
+                  <Grid RowDefinitions="22,*">
+                    <Border Grid.Row="0" Background="#08111E" BorderBrush="#142840" BorderThickness="0,0,0,1" Padding="10,0">
+                      <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0" Text="HVAC / FFU" FontSize="7.5" Foreground="#2A6888"
+                                   FontWeight="Bold" FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="Fan Filter Unit Array" FontSize="7" Foreground="#1A3E54"
+                                   FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center"/>
+                      </Grid>
+                    </Border>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="10,0">
+                      <Ellipse Width="8" Height="8" VerticalAlignment="Center"
+                               Fill="{Binding AllSensors[1].StatusColor, Converter={StaticResource StringToBrush}}"/>
+                      <TextBlock Text="PM10 SENSOR" FontSize="7" Foreground="#1E5070"
+                                 FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+
+                <Border Grid.Column="1" Background="#020508"/>
+
+                <!-- CDA / Chemical -->
+                <Border Grid.Column="2" Background="#070E18" BorderBrush="#102030" BorderThickness="0,0,0,1">
+                  <Grid RowDefinitions="22,*">
+                    <Border Grid.Row="0" Background="#08111E" BorderBrush="#142840" BorderThickness="0,0,0,1" Padding="10,0">
+                      <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0" Text="CDA / CHEMICAL" FontSize="7.5" Foreground="#2A6888"
+                                   FontWeight="Bold" FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="Clean Dry Air · Distribution" FontSize="7" Foreground="#1A3E54"
+                                   FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center"/>
+                      </Grid>
+                    </Border>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="10,0">
+                      <Ellipse Width="8" Height="8" VerticalAlignment="Center"
+                               Fill="{Binding AllSensors[5].StatusColor, Converter={StaticResource StringToBrush}}"/>
+                      <TextBlock Text="HUMIDITY SENSOR" FontSize="7" Foreground="#1E5070"
+                                 FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+
+                <Border Grid.Column="3" Background="#020508"/>
+
+                <!-- EHS / Gowning -->
+                <Border Grid.Column="4" Background="#070E18" BorderBrush="#102030" BorderThickness="0,0,0,1">
+                  <Grid RowDefinitions="22,*">
+                    <Border Grid.Row="0" Background="#08111E" BorderBrush="#142840" BorderThickness="0,0,0,1" Padding="10,0">
+                      <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0" Text="GOWNING / EHS" FontSize="7.5" Foreground="#2A6888"
+                                   FontWeight="Bold" FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="Environmental Health &amp; Safety" FontSize="7" Foreground="#1A3E54"
+                                   FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center"/>
+                      </Grid>
+                    </Border>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="10,0">
+                      <Ellipse Width="8" Height="8" Fill="#2A6888" VerticalAlignment="Center"/>
+                      <TextBlock Text="EHS STATION" FontSize="7" Foreground="#1E5070"
+                                 FontFamily="Consolas,Courier New,monospace" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+
+              </Grid>
+
+            </Grid>
+          </Grid>
 
           <!-- Layer 3: Sensor HUD overlay -->
           <Grid RowDefinitions="Auto,*,Auto" Margin="12,10,12,10" IsHitTestVisible="False">
 
             <!-- Top sensor row: PM2.5  PM10  NH3 -->
-            <UniformGrid Grid.Row="0" Columns="3" Margin="0,0,0,0">
+            <UniformGrid Grid.Row="0" Columns="3">
 
               <!-- PM2.5 -->
               <Border Margin="4" Padding="10,8" CornerRadius="10"
@@ -269,7 +705,7 @@
                            Fill="{Binding AllSensors[0].StatusColor, Converter={StaticResource StringToBrush}}" />
                   <StackPanel Grid.Column="1" Spacing="1">
                     <TextBlock Text="PM2.5" FontSize="9" Foreground="#6A8099" FontWeight="SemiBold" />
-                    <StackPanel Orientation="Horizontal" Spacing="3" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="3">
                       <TextBlock Text="{Binding AllSensors[0].DisplayValue}" FontSize="18" FontWeight="Bold"
                                  Foreground="{Binding AllSensors[0].StatusColor, Converter={StaticResource StringToBrush}}" />
                       <TextBlock Text="μg/m³" FontSize="9" Foreground="#3A6080" VerticalAlignment="Bottom" Margin="0,0,0,2" />
@@ -320,7 +756,7 @@
 
             </UniformGrid>
 
-            <!-- Middle: empty (shows video) -->
+            <!-- Middle: clean video window -->
             <Grid Grid.Row="1" />
 
             <!-- Bottom sensor row: CO  Temp  Humid -->

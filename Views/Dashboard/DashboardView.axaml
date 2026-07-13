@@ -34,10 +34,12 @@
     <!-- ══════════════════════════════════════════════════════════════════ -->
     <!-- OVERVIEW TAB                                                       -->
     <!-- ══════════════════════════════════════════════════════════════════ -->
-    <Grid Grid.Row="1" RowDefinitions="170,*,160" IsVisible="{Binding IsOverviewTab}">
+    <ScrollViewer Grid.Row="1" IsVisible="{Binding IsOverviewTab}"
+                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <Grid RowDefinitions="Auto,Auto,Auto">
 
       <!-- ROW 1: Tower Lamp + 6 Sensor cards -->
-      <Grid Grid.Row="0" ColumnDefinitions="150,*,*,*,*,*,*" Margin="12,10,12,6">
+      <Grid Grid.Row="0" ColumnDefinitions="150,*,*,*,*,*,*" Height="170" Margin="12,10,12,6">
 
         <!-- Tower Lamp -->
         <Border Grid.Column="0" Classes="card" Padding="12" Margin="0,0,6,0">
@@ -86,7 +88,7 @@
                        Foreground="{Binding Pm25Card.StatusColor, Converter={StaticResource StringToBrush}}" />
             <TextBlock Text="μg/m³" FontSize="10" Classes="muted" />
             <ProgressBar Value="{Binding Pm25Card.NormalizedValue}" Minimum="0" Maximum="1"
-                         Classes="primary" Height="4" CornerRadius="2" />
+                         Classes="primary" Height="5" Margin="8,4,8,0" CornerRadius="3" />
             <TextBlock Text="{Binding Pm25Card.StatusText}" FontSize="10" FontWeight="SemiBold"
                        Foreground="{Binding Pm25Card.StatusColor, Converter={StaticResource StringToBrush}}" />
           </StackPanel>
@@ -105,7 +107,7 @@
                        Foreground="{Binding Pm10Card.StatusColor, Converter={StaticResource StringToBrush}}" />
             <TextBlock Text="μg/m³" FontSize="10" Classes="muted" />
             <ProgressBar Value="{Binding Pm10Card.NormalizedValue}" Minimum="0" Maximum="1"
-                         Classes="primary" Height="4" CornerRadius="2" />
+                         Classes="primary" Height="5" Margin="8,4,8,0" CornerRadius="3" />
             <TextBlock Text="{Binding Pm10Card.StatusText}" FontSize="10" FontWeight="SemiBold"
                        Foreground="{Binding Pm10Card.StatusColor, Converter={StaticResource StringToBrush}}" />
           </StackPanel>
@@ -124,7 +126,7 @@
                        Foreground="{Binding Nh3Card.StatusColor, Converter={StaticResource StringToBrush}}" />
             <TextBlock Text="ppm" FontSize="10" Classes="muted" />
             <ProgressBar Value="{Binding Nh3Card.NormalizedValue}" Minimum="0" Maximum="1"
-                         Classes="primary" Height="4" CornerRadius="2" />
+                         Classes="primary" Height="5" Margin="8,4,8,0" CornerRadius="3" />
             <TextBlock Text="{Binding Nh3Card.StatusText}" FontSize="10" FontWeight="SemiBold"
                        Foreground="{Binding Nh3Card.StatusColor, Converter={StaticResource StringToBrush}}" />
           </StackPanel>
@@ -143,7 +145,7 @@
                        Foreground="{Binding CoCard.StatusColor, Converter={StaticResource StringToBrush}}" />
             <TextBlock Text="ppm" FontSize="10" Classes="muted" />
             <ProgressBar Value="{Binding CoCard.NormalizedValue}" Minimum="0" Maximum="1"
-                         Classes="primary" Height="4" CornerRadius="2" />
+                         Classes="primary" Height="5" Margin="8,4,8,0" CornerRadius="3" />
             <TextBlock Text="{Binding CoCard.StatusText}" FontSize="10" FontWeight="SemiBold"
                        Foreground="{Binding CoCard.StatusColor, Converter={StaticResource StringToBrush}}" />
           </StackPanel>
@@ -162,7 +164,7 @@
                        Foreground="{Binding TempCard.StatusColor, Converter={StaticResource StringToBrush}}" />
             <TextBlock Text="°C" FontSize="10" Classes="muted" />
             <ProgressBar Value="{Binding TempCard.NormalizedValue}" Minimum="0" Maximum="1"
-                         Classes="primary" Height="4" CornerRadius="2" />
+                         Classes="primary" Height="5" Margin="8,4,8,0" CornerRadius="3" />
             <TextBlock Text="{Binding TempCard.StatusText}" FontSize="10" FontWeight="SemiBold"
                        Foreground="{Binding TempCard.StatusColor, Converter={StaticResource StringToBrush}}" />
           </StackPanel>
@@ -181,55 +183,230 @@
                        Foreground="{Binding HumidityCard.StatusColor, Converter={StaticResource StringToBrush}}" />
             <TextBlock Text="%" FontSize="10" Classes="muted" />
             <ProgressBar Value="{Binding HumidityCard.NormalizedValue}" Minimum="0" Maximum="1"
-                         Classes="primary" Height="4" CornerRadius="2" />
+                         Classes="primary" Height="5" Margin="8,4,8,0" CornerRadius="3" />
             <TextBlock Text="{Binding HumidityCard.StatusText}" FontSize="10" FontWeight="SemiBold"
                        Foreground="{Binding HumidityCard.StatusColor, Converter={StaticResource StringToBrush}}" />
           </StackPanel>
         </Border>
       </Grid>
 
-      <!-- ROW 2: Charts -->
-      <Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="12,0,12,8">
+      <!-- ROW 2: 6 sensor mini-charts (3 columns × 2 rows) -->
+      <Grid Grid.Row="1" RowDefinitions="210,210" ColumnDefinitions="*,*,*" Margin="12,0,12,8">
 
-        <!-- Env chart -->
-        <Border Grid.Column="0" Classes="card" Padding="0" Margin="0,0,6,0">
-          <Grid RowDefinitions="Auto,*">
-            <StackPanel Grid.Row="0" Margin="20,16,20,4">
-              <TextBlock Text="Environmental Monitoring" FontSize="13" FontWeight="SemiBold" />
-              <TextBlock Text="Temperature · Humidity · Real-time" FontSize="11" Classes="muted" />
+        <!-- PM2.5 -->
+        <Border Grid.Row="0" Grid.Column="0" Classes="card" Padding="0" Margin="0,0,4,4">
+          <Grid RowDefinitions="Auto,Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="14,10,14,2">
+              <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                <TextBlock Text="PM2.5" FontSize="11" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Pm25Card.DisplayValue}" FontSize="11" FontWeight="Bold"
+                           Foreground="{Binding Pm25Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+                <TextBlock Text="μg/m³" FontSize="10" Classes="muted" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding Pm25Card.StatusText}" FontSize="9" FontWeight="SemiBold"
+                         Foreground="{Binding Pm25Card.StatusColor, Converter={StaticResource StringToBrush}}"
+                         VerticalAlignment="Center" />
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="14" Margin="14,0,14,4">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="AVG" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Pm25Stats.Avg}" FontSize="9" FontWeight="SemiBold" Foreground="#94A3B8" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MIN" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Pm25Stats.Min}" FontSize="9" FontWeight="SemiBold" Foreground="#00D2B5" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MAX" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Pm25Stats.Max}" FontSize="9" FontWeight="SemiBold" Foreground="#EF4444" VerticalAlignment="Center" />
+              </StackPanel>
             </StackPanel>
-            <lvc:CartesianChart Grid.Row="1"
-                                Series="{Binding TempHumiditySeries}"
-                                XAxes="{Binding XAxes}"
-                                YAxes="{Binding YAxesTemp}"
-                                LegendPosition="Top"
-                                Background="Transparent"
-                                AnimationsSpeed="0:0:0.4"
-                                Margin="8,0,8,8" />
+            <lvc:CartesianChart Grid.Row="2" Series="{Binding Pm25Series}"
+                                XAxes="{Binding XAxes}" YAxes="{Binding YAxesPm25}"
+                                LegendPosition="Hidden" Background="Transparent"
+                                AnimationsSpeed="0:0:0.5" Margin="4,0,4,4" />
           </Grid>
         </Border>
 
-        <!-- Air quality chart -->
-        <Border Grid.Column="1" Classes="card" Padding="0" Margin="6,0,0,0">
-          <Grid RowDefinitions="Auto,*">
-            <StackPanel Grid.Row="0" Margin="20,16,20,4">
-              <TextBlock Text="Air Quality Index" FontSize="13" FontWeight="SemiBold" />
-              <TextBlock Text="PM2.5 · CO concentration trend" FontSize="11" Classes="muted" />
+        <!-- PM10 -->
+        <Border Grid.Row="0" Grid.Column="1" Classes="card" Padding="0" Margin="4,0,4,4">
+          <Grid RowDefinitions="Auto,Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="14,10,14,2">
+              <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                <TextBlock Text="PM10" FontSize="11" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Pm10Card.DisplayValue}" FontSize="11" FontWeight="Bold"
+                           Foreground="{Binding Pm10Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+                <TextBlock Text="μg/m³" FontSize="10" Classes="muted" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding Pm10Card.StatusText}" FontSize="9" FontWeight="SemiBold"
+                         Foreground="{Binding Pm10Card.StatusColor, Converter={StaticResource StringToBrush}}"
+                         VerticalAlignment="Center" />
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="14" Margin="14,0,14,4">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="AVG" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Pm10Stats.Avg}" FontSize="9" FontWeight="SemiBold" Foreground="#94A3B8" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MIN" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Pm10Stats.Min}" FontSize="9" FontWeight="SemiBold" Foreground="#00D2B5" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MAX" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Pm10Stats.Max}" FontSize="9" FontWeight="SemiBold" Foreground="#EF4444" VerticalAlignment="Center" />
+              </StackPanel>
             </StackPanel>
-            <lvc:CartesianChart Grid.Row="1"
-                                Series="{Binding AirQualitySeries}"
-                                XAxes="{Binding XAxes}"
-                                YAxes="{Binding YAxesAir}"
-                                LegendPosition="Top"
-                                Background="Transparent"
-                                AnimationsSpeed="0:0:0.4"
-                                Margin="8,0,8,8" />
+            <lvc:CartesianChart Grid.Row="2" Series="{Binding Pm10Series}"
+                                XAxes="{Binding XAxes}" YAxes="{Binding YAxesPm10}"
+                                LegendPosition="Hidden" Background="Transparent"
+                                AnimationsSpeed="0:0:0.5" Margin="4,0,4,4" />
           </Grid>
         </Border>
+
+        <!-- NH3 -->
+        <Border Grid.Row="0" Grid.Column="2" Classes="card" Padding="0" Margin="4,0,0,4">
+          <Grid RowDefinitions="Auto,Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="14,10,14,2">
+              <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                <TextBlock Text="NH₃" FontSize="11" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Nh3Card.DisplayValue}" FontSize="11" FontWeight="Bold"
+                           Foreground="{Binding Nh3Card.StatusColor, Converter={StaticResource StringToBrush}}" />
+                <TextBlock Text="ppm" FontSize="10" Classes="muted" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding Nh3Card.StatusText}" FontSize="9" FontWeight="SemiBold"
+                         Foreground="{Binding Nh3Card.StatusColor, Converter={StaticResource StringToBrush}}"
+                         VerticalAlignment="Center" />
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="14" Margin="14,0,14,4">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="AVG" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Nh3Stats.Avg}" FontSize="9" FontWeight="SemiBold" Foreground="#94A3B8" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MIN" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Nh3Stats.Min}" FontSize="9" FontWeight="SemiBold" Foreground="#00D2B5" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MAX" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Nh3Stats.Max}" FontSize="9" FontWeight="SemiBold" Foreground="#EF4444" VerticalAlignment="Center" />
+              </StackPanel>
+            </StackPanel>
+            <lvc:CartesianChart Grid.Row="2" Series="{Binding Nh3Series}"
+                                XAxes="{Binding XAxes}" YAxes="{Binding YAxesNh3}"
+                                LegendPosition="Hidden" Background="Transparent"
+                                AnimationsSpeed="0:0:0.5" Margin="4,0,4,4" />
+          </Grid>
+        </Border>
+
+        <!-- CO -->
+        <Border Grid.Row="1" Grid.Column="0" Classes="card" Padding="0" Margin="0,4,4,0">
+          <Grid RowDefinitions="Auto,Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="14,10,14,2">
+              <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                <TextBlock Text="CO" FontSize="11" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding CoCard.DisplayValue}" FontSize="11" FontWeight="Bold"
+                           Foreground="{Binding CoCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+                <TextBlock Text="ppm" FontSize="10" Classes="muted" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding CoCard.StatusText}" FontSize="9" FontWeight="SemiBold"
+                         Foreground="{Binding CoCard.StatusColor, Converter={StaticResource StringToBrush}}"
+                         VerticalAlignment="Center" />
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="14" Margin="14,0,14,4">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="AVG" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding CoStats.Avg}" FontSize="9" FontWeight="SemiBold" Foreground="#94A3B8" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MIN" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding CoStats.Min}" FontSize="9" FontWeight="SemiBold" Foreground="#00D2B5" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MAX" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding CoStats.Max}" FontSize="9" FontWeight="SemiBold" Foreground="#EF4444" VerticalAlignment="Center" />
+              </StackPanel>
+            </StackPanel>
+            <lvc:CartesianChart Grid.Row="2" Series="{Binding CoSeries}"
+                                XAxes="{Binding XAxes}" YAxes="{Binding YAxesCo}"
+                                LegendPosition="Hidden" Background="Transparent"
+                                AnimationsSpeed="0:0:0.5" Margin="4,0,4,4" />
+          </Grid>
+        </Border>
+
+        <!-- Temperature -->
+        <Border Grid.Row="1" Grid.Column="1" Classes="card" Padding="0" Margin="4,4,4,0">
+          <Grid RowDefinitions="Auto,Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="14,10,14,2">
+              <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                <TextBlock Text="Temperature" FontSize="11" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding TempCard.DisplayValue}" FontSize="11" FontWeight="Bold"
+                           Foreground="{Binding TempCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+                <TextBlock Text="°C" FontSize="10" Classes="muted" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding TempCard.StatusText}" FontSize="9" FontWeight="SemiBold"
+                         Foreground="{Binding TempCard.StatusColor, Converter={StaticResource StringToBrush}}"
+                         VerticalAlignment="Center" />
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="14" Margin="14,0,14,4">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="AVG" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding TempStats.Avg}" FontSize="9" FontWeight="SemiBold" Foreground="#94A3B8" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MIN" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding TempStats.Min}" FontSize="9" FontWeight="SemiBold" Foreground="#00D2B5" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MAX" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding TempStats.Max}" FontSize="9" FontWeight="SemiBold" Foreground="#EF4444" VerticalAlignment="Center" />
+              </StackPanel>
+            </StackPanel>
+            <lvc:CartesianChart Grid.Row="2" Series="{Binding TempSeries}"
+                                XAxes="{Binding XAxes}" YAxes="{Binding YAxesTemp}"
+                                LegendPosition="Hidden" Background="Transparent"
+                                AnimationsSpeed="0:0:0.5" Margin="4,0,4,4" />
+          </Grid>
+        </Border>
+
+        <!-- Humidity -->
+        <Border Grid.Row="1" Grid.Column="2" Classes="card" Padding="0" Margin="4,4,0,0">
+          <Grid RowDefinitions="Auto,Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="14,10,14,2">
+              <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                <TextBlock Text="Humidity" FontSize="11" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding HumidityCard.DisplayValue}" FontSize="11" FontWeight="Bold"
+                           Foreground="{Binding HumidityCard.StatusColor, Converter={StaticResource StringToBrush}}" />
+                <TextBlock Text="%" FontSize="10" Classes="muted" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding HumidityCard.StatusText}" FontSize="9" FontWeight="SemiBold"
+                         Foreground="{Binding HumidityCard.StatusColor, Converter={StaticResource StringToBrush}}"
+                         VerticalAlignment="Center" />
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="14" Margin="14,0,14,4">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="AVG" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding HumidStats.Avg}" FontSize="9" FontWeight="SemiBold" Foreground="#94A3B8" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MIN" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding HumidStats.Min}" FontSize="9" FontWeight="SemiBold" Foreground="#00D2B5" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="MAX" FontSize="9" Classes="muted" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding HumidStats.Max}" FontSize="9" FontWeight="SemiBold" Foreground="#EF4444" VerticalAlignment="Center" />
+              </StackPanel>
+            </StackPanel>
+            <lvc:CartesianChart Grid.Row="2" Series="{Binding HumidSeries}"
+                                XAxes="{Binding XAxes}" YAxes="{Binding YAxesHumid}"
+                                LegendPosition="Hidden" Background="Transparent"
+                                AnimationsSpeed="0:0:0.5" Margin="4,0,4,4" />
+          </Grid>
+        </Border>
+
       </Grid>
 
       <!-- ROW 3: Recent Alarms (full width) -->
-      <Border Grid.Row="2" Classes="card" Padding="0" Margin="12,0,12,12">
+      <Border Grid.Row="2" Classes="card" MinHeight="120" Padding="0" Margin="12,0,12,12">
         <Grid RowDefinitions="Auto,*">
           <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,12,20,8" Spacing="10">
             <mi:MaterialIcon Kind="AlertCircleOutline" Width="18" Height="18"
@@ -274,6 +451,7 @@
         </Grid>
       </Border>
     </Grid>
+    </ScrollViewer>
 
     <!-- ══════════════════════════════════════════════════════════════════ -->
     <!-- SENSORS TAB                                                        -->
