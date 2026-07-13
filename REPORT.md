@@ -1,7 +1,7 @@
 # Green Vision — 프로젝트 개발 보고서
 
 **AI 기반 반도체 스마트 안전 관리 시스템**  
-작성일: 2026-06-30 | 버전: 1.0.0
+작성일: 2026-06-30 | 최종 업데이트: 2026-07-13 | 버전: 1.1.0
 
 ---
 
@@ -81,6 +81,17 @@
      │  │  Status  │  │          │  │  /About     │  │
      │  └──────────┘  └──────────┘  └─────────────┘  │
      └───────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│              Vision Inspection 파이프라인 (Phase 2 진행 중)       │
+│                                                                  │
+│  [ELP 20MP USB 카메라]                                           │
+│         │ USB                                                    │
+│  [Raspberry Pi 5] ─── WiFi (핫스팟) ───► GreenVision 앱         │
+│   /dev/video0                            http://<pi-ip>:8080    │
+│   camera_stream.py                       /stream (MJPEG)        │
+│   (MJPEG HTTP 서버)                                              │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -143,11 +154,15 @@ GreenVision/
 ├── Styles/
 │   └── AppTheme.axaml                 # 전체 다크 테마, 컴포넌트 스타일
 │
+├── esp32/                             # ★ ESP32 Arduino 펌웨어
+│   └── esp32_greenvision.ino
+│
 └── server/                            # ★ FastAPI 백엔드 서버
     ├── main.py                        # FastAPI 엔드포인트 정의
+    ├── camera_stream.py               # ★ ELP 카메라 MJPEG 스트리밍 서버 (Pi에서 실행)
     ├── supabase_schema.sql            # Supabase 테이블/뷰/RLS 스크립트
-    ├── esp32_greenvision.ino          # ESP32 Arduino 펌웨어
     ├── requirements.txt               # Python 의존성
+    ├── .python-version                # Python 3.14 명시
     └── .env                           # Supabase URL + anon key (로컬 전용)
 ```
 
@@ -214,7 +229,7 @@ sensor_readings (
 
 ---
 
-## 6. 현재 상태 (2026-06-30 기준)
+## 6. 현재 상태 (2026-07-13 기준)
 
 ### ✅ 완료
 - [x] 전체 UI 레이아웃 (7개 페이지)
@@ -225,17 +240,26 @@ sensor_readings (
 - [x] 한국어/영어 런타임 언어 전환 (LocalizationService)
 - [x] Material Icons 적용 (이모지 제거)
 - [x] Dashboard 탭 전환 (Overview/Sensors/Alarms)
+- [x] Dashboard / FabMonitoring UI 개선 (레이아웃 업데이트)
 - [x] FastAPI 서버 구현 및 로컬 실행 확인
 - [x] Supabase 프로젝트 생성 + 스키마 적용
-- [x] ESP32 Arduino 펌웨어 초안 작성
+- [x] ESP32 Arduino 펌웨어 초안 작성 (`esp32/` 디렉토리로 분리)
 - [x] SerialPortSensorService (USB 모드) 구현
 - [x] RestApiSensorService (WiFi/REST 모드) 구현
+- [x] GitHub 레포지토리 연동 (daoulee/FabSentinel)
+- [x] **Raspberry Pi SSH 접속 성공** (teamfive@raspberrypi, 핸드폰 핫스팟 네트워크)
+- [x] **ELP 20MP USB 카메라 Pi 인식 확인** (/dev/video0, UVC 드라이버)
+- [x] **OpenCV 4.10.0 Pi 설치 확인**
+- [x] **MJPEG 스트리밍 서버 구현** (server/camera_stream.py, 포트 8080)
+- [x] Pi에 FabSentinel 레포 git clone 완료
 
 ### 🔲 미완료 (다음 단계)
+- [ ] Pi에서 camera_stream.py 실행 및 스트리밍 동작 확인
+- [ ] Mac GreenVision 앱 Vision Inspection 페이지에서 MJPEG 수신 연동
 - [ ] Settings UI에서 센서 소스(Simulator/Serial/REST) 런타임 전환
 - [ ] App.axaml.cs DI에서 소스 전환 연동
 - [ ] ESP32 실제 하드웨어 테스트 및 펌웨어 보정
-- [ ] 비전 검사 (ONNX Runtime + OpenCV) — Phase 2
+- [ ] 비전 검사 AI 추론 (ONNX Runtime) — Phase 2 후반
 - [ ] 로그 CSV 내보내기 기능
 - [ ] 설정값 JSON 파일 저장/로드
 - [ ] Windows 배포 테스트
@@ -259,10 +283,26 @@ cd /Users/daul/GreenVision/server
 ```
 
 ### ESP32 펌웨어
-1. Arduino IDE에서 `server/esp32_greenvision.ino` 열기
+1. Arduino IDE에서 `esp32/esp32_greenvision.ino` 열기
 2. WiFi SSID / PASSWORD 수정
 3. `API_ENDPOINT` 를 FastAPI 서버 IP로 수정
 4. ESP32에 업로드
+
+### Raspberry Pi 카메라 스트리밍 서버
+```bash
+# Pi SSH 접속 (같은 WiFi/핫스팟 필요)
+ssh teamfive@raspberrypi.local
+
+# 스트리밍 서버 실행
+python3 ~/FabSentinel/server/camera_stream.py
+# → http://<pi-ip>:8080/stream 으로 MJPEG 스트리밍
+```
+
+**Pi 환경:**
+- Raspberry Pi 5 (Linux raspberrypi 6.12.62, aarch64)
+- ELP 20MP U3 USB 카메라 → /dev/video0
+- OpenCV 4.10.0
+- 네트워크: 핸드폰 핫스팟
 
 ---
 
